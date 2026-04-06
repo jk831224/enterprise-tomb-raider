@@ -175,7 +175,7 @@ enterprise-tomb-raider/
 
 ### 方法論啟發
 
-分析方法論的靈感來自 YouTube 頻道[「商談，不廢話」](https://www.youtube.com/@BizTalkNononsense)——用結構化的框架拆解商業情報，而非堆砌資訊。這個頻道讓我意識到：好的公司研究不是「查到越多越好」，而是「問對問題、用對框架」。
+分析方法論的靈感來自 YouTube 頻道[「商談，不廢話」](https://www.youtube.com/@RealBizChat)——用結構化的框架拆解商業情報，而非堆砌資訊。這個頻道讓我意識到：好的公司研究不是「查到越多越好」，而是「問對問題、用對框架」。
 
 在做這個專案之前，我也嘗試過其他 AI Agent 的開發。那些經驗讓我學到一件事：Agent 的價值不在於它能搜多少資料，而在於你怎麼設計它的思考結構。這也是為什麼這個專案最終走向 Context Engineering 而非傳統的 RAG 或 workflow automation。
 
