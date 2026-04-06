@@ -112,7 +112,7 @@ references/
 │   └── company-report.md          # 公司報告模板（Agent 產出時引用）
 └── cases/
     ├── _case-template.md          # Case 標準結構
-    └── vmfive-2026.md             # 實戰案例：VMFive 調查
+    └── (案例隨使用累積)
 ```
 
 ---
@@ -261,8 +261,7 @@ case 結構：
 └── 品質自評
 ```
 
-Agent 在執行前會讀取相關 case，避免重蹈覆轍。目前已有案例：
-- `vmfive-2026.md`：AdTech 微型企業調查，記錄了 4 個常見調查陷阱
+Agent 在執行前會讀取相關 case，避免重蹈覆轍。案例會隨使用逐步累積。
 
 ---
 

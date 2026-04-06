@@ -25,7 +25,7 @@ claude
 |------|------|------|
 | `/recon` | 統一入口，自動判斷路徑 | `/recon 台積電`、`/recon AI Agent 產業` |
 | `/industry` | 直接進入產業分析（路徑 A） | `/industry 東南亞跨境電商物流` |
-| `/company` | 直接進入公司分析（路徑 B） | `/company VMFive` |
+| `/company` | 直接進入公司分析（路徑 B） | `/company 鴻海` |
 
 也可以直接用自然語言：「幫我研究台積電」，系統會自動觸發 `/recon`。
 
@@ -129,8 +129,7 @@ enterprise-tomb-raider/
 
 每次分析完成後，系統會沉澱一個 case 到 `references/cases/`，記錄踩過的坑和有效的搜尋策略。Agent 執行前會讀取相關案例，避免重蹈覆轍。
 
-目前已有案例：
-- **VMFive (2026)**：AdTech 微型企業調查。記錄了「只看搜尋摘要漏掉 3 位管理層」「用職稱搜不到人」等 4 個常見陷阱。
+案例會隨著使用逐步累積。案例模板見 `references/cases/_case-template.md`。
 
 ## 設計決策記錄
 
