@@ -2,6 +2,28 @@
 
 所有版本變更紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [v1.2] — 2026-04-06
+
+修正台灣公司登記資料引用流程——單一來源（opengovtw）曾導致董監事名單和資本額寫入過時資料，現在強制多來源交叉比對。
+
+### 修正
+
+- **entity-verification.md**：新增「台灣公司登記資料：多來源交叉比對（強制）」章節
+  - 來源優先序：biz.news.org.tw > twincn.com snippet > opengovtw.com
+  - 5 步比對流程，禁止單一來源直接寫入報告
+  - 完成標準新增 2 條：多來源交叉比對 + 資料截至日期標註
+
+- **quality-checklist.md**：新增「法律實體資料正確性」檢查區塊（#7-#8）
+  - #7 登記資料交叉比對（含常見錯誤示例與正確做法）
+  - #8 資料時效標註（截至最後核准變更日期，非查詢日）
+  - 後續項目重新編號（原 7-20 → 9-22）
+
+- **fetch-policy.md**：新增「台灣公司登記：推薦來源與比對規則」章節
+  - 來源優先序表（含 URL 格式、取得方式、redirect 提醒）
+  - 已知教訓段落，引用具體案例
+
+- **.gitignore**：新增 `references/cases/case-*.md` 和 `output/*.md`，避免公司特定分析結果推上 public repo
+
 ## [v1.1] — 2026-04-06
 
 新增 User Profile 與 Decision Brief 機制：從「給你資訊」進化到「告訴你這對你意味著什麼」。
