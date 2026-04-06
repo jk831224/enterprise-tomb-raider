@@ -122,13 +122,87 @@ Scoping 完成 = 能填完以下參數包：
 **路徑 B**：
 1. 載入 `agent/prompts/entity-verification.md` → 法律實體驗證 + 規模確認
 2. 向使用者確認基本輪廓，確認規模分類
-3. 載入 `agent/prompts/stakeholder-investigation.md` → 利害關係人調查
-4. 向使用者呈現關鍵發現摘要
-5. 載入 `agent/prompts/industry-analysis.md`（附加錨點參數）→ 產業分析
-6. 載入 `agent/prompts/company-deep-dive.md` → 公司深度分析
-7. 產出完整報告
+3. **執行預分析評估**（見下方 Step 4.0.5），向使用者呈現分析計畫並等待確認
+4. 載入 `agent/prompts/stakeholder-investigation.md` → 利害關係人調查
+5. 向使用者呈現關鍵發現摘要
+6. 載入 `agent/prompts/industry-analysis.md`（附加錨點參數）→ 產業分析
+7. **大型/上市**：載入 `agent/prompts/annual-report-analysis.md` → 年報解析（見 Step 4.2.5）
+8. 載入 `agent/prompts/company-deep-dive.md` → 公司深度分析（年報數據作為輸入）
+9. 產出完整報告
 
 **每個階段的 prompt 只在進入該階段時載入，不要一次全部載入。**
+
+### Step 4.0.5: 預分析評估（Pre-Analysis Assessment）
+
+**觸發時機**：entity-verification 完成、使用者確認基本輪廓之後、stakeholder-investigation 之前。
+
+**搜尋預算**：零。完全基於 entity-verification 的結果進行合成判斷。
+
+**執行邏輯**：根據已確認的規模分類、上市狀態、市場，向使用者呈現以下評估（一次呈現，等待確認）：
+
+```
+### 分析計畫
+
+| 維度 | 評估 |
+|------|------|
+| 目標 | [公司名] |
+| 規模分類 | [微型/中型/大型上市] |
+| 資料豐富度 | [高：上市公司，年報+財報+法說會公開] / [中：公開發行或融資紀錄可查] / [低：非公開，僅商業登記和媒體報導] |
+| 年報計畫 | [強制取得：大型/上市] / [建議取得：中型且公開發行] / [不適用：微型或非公開] |
+| 年報預期來源 | [公司 IR 網站 / MOPS / SEC EDGAR / 不適用] |
+
+### 預估資源消耗
+
+| 項目 | 預估 |
+|------|------|
+| Web Search 次數 | [微型 25-30 / 中型 30-40 / 大型 40-55] |
+| Web Fetch 次數 | [微型 3-5 / 中型 5-8 / 大型 8-12] |
+| 分析階段數 | [微型 4-5 / 中型 5 / 大型 6（含年報解析）] |
+| 預估時間 | [微型 15-20 分 / 中型 20-25 分 / 大型 25-35 分] |
+| 複雜度因子 | [如有：多國營運 +15% / 多法人 +15% / 爭議歷史 +10%] |
+
+### 模型建議
+
+根據 `references/cases/case-個人理財 SaaS A-model-comparison.md` 的決策樹：
+- 大型/上市 + 年報需解析 → 建議 Opus 4.6 (1M)（需完整 context 保留年報數據至最終報告）
+- 中型 → 建議 Sonnet 4.6（性價比最佳，品質差異在可接受範圍）
+- 微型 → 建議 Sonnet 4.6（Haiku 不建議用於全流程）
+- 使用者明確要求控制成本 → Sonnet 不論規模
+
+呈現格式：
+- 當前使用模型：[偵測當前 session 的模型]
+- 建議模型：[根據上述邏輯]
+- 原因：[一句話]
+- 如果建議與當前不同：「建議使用 [模型] 以獲得最佳品質。如需切換，請開啟新 session 並選擇該模型。輸入『繼續』以當前模型執行。」
+
+### 年報取得提示
+
+僅當年報計畫為「強制」或「建議」時顯示：
+「如果你已下載年報 PDF，請提供檔案路徑（如 `/Users/you/Downloads/annual-report.pdf`），可大幅提升分析品質和速度。輸入『跳過』由系統自行搜尋取得。」
+```
+
+**使用者回應處理**：
+- 「繼續」/「開始」/「好」→ 進入 stakeholder-investigation
+- 「跳過年報」→ 標記年報為 skip，後續 company-deep-dive 會降級標註受影響維度
+- 提供 PDF 路徑 → 記錄路徑，annual-report-analysis 階段直接 Read
+- 其他調整要求 → 按使用者意圖修改參數後繼續
+
+**注意**：此步驟不應超過 1 輪對話。如果使用者只說「繼續」，不追問，直接進入下一階段。
+
+### Step 4.2.5: 年報解析（Annual Report Analysis）
+
+**觸發時機**：industry-analysis 完成之後、company-deep-dive 之前。
+
+**執行條件**：
+- 大型/上市 → **強制執行**
+- 中型且公開發行 → 建議執行（使用者在 Step 4.0.5 若未跳過則執行）
+- 微型或使用者已跳過 → 不執行，直接進入 company-deep-dive
+
+**執行方式**：載入 `agent/prompts/annual-report-analysis.md`，傳入公司名稱、規模分類、市場、以及使用者提供的 PDF 路徑（如有）。
+
+**產出**：年報數據摘要 + 衝突清單。不向使用者呈現完整摘要（太長），改為呈現關鍵發現和衝突項目的摘要（3-5 句）。
+
+**進入 company-deep-dive 時**：將年報數據摘要和衝突清單作為輸入上下文。
 
 ### Step 5: 品質 Review
 

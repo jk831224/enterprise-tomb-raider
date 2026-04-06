@@ -2,6 +2,63 @@
 
 所有版本變更紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [v1.3] — 2026-04-07
+
+上市遊戲營運商 C（大型上市公司）分析案例暴露系統性缺口：年報 PDF 是 must have 但未強制、營收結構被誤判（90%→實際 74%）、無預分析成本評估。本版新增「預分析評估」和「年報解析」兩大機制，確保不同規模公司獲得一致品質的分析。
+
+### 新增
+
+- **`agent/prompts/annual-report-analysis.md`**：年報解析階段 prompt
+  - 12 項必須提取的數據點（營收拆分、供應商集中度、重大合約等）
+  - PDF 取得降級鏈（使用者提供 > IR 網站 > 監管平台 > HTML 版）
+  - 強制產出「衝突清單」校正先前搜尋誤差
+  - 適用矩陣：大型=強制、中型=建議、微型=跳過
+
+- **`references/methodology/annual-report-sources.md`**：各市場年報來源登記表
+  - 涵蓋台灣（MOPS/IR）、美國（EDGAR）、日本（EDINET）、韓國（DART）、香港（HKEXnews）、中國（巨潮）
+  - 台灣年報標準結構和關鍵頁面定位提示
+  - 通用搜尋模式和已知限制
+
+- **預分析評估（Pre-Analysis Assessment）**：插入 `recon/SKILL.md` Step 4.0.5
+  - entity-verification 完成後、stakeholder-investigation 之前
+  - 零搜尋預算，向使用者展示：資料豐富度、年報計畫、搜尋預估、模型建議、時間預估
+  - 使用者確認後才繼續，確保知情決策
+
+### 修改
+
+- **`agent/AGENT-ROUTES.md`**：路徑 B 新增 Step 2.5（年報解析）和預分析評估檢查點
+
+- **`agent/AGENT-CORE.md`**：
+  - 核心原則新增「絕對誠實」條款——找不到就標 `[資料缺失]`，不以猜測填補
+  - 核心原則新增「數據源優先序」——年報 > IR 網站 > 財經平台 > 新聞 > snippet
+  - 搜尋預算表新增「年報解析」行（5 search + 3 fetch）
+
+- **`agent/prompts/company-deep-dive.md`**：新增「年報數據前置檢查」
+  - 大型/上市未取得年報 → 6 個維度自動降級標註
+  - 報告 metadata 標註警告
+
+- **`.claude/skills/recon/SKILL.md`**：插入 Step 4.0.5（預分析評估）和 Step 4.2.5（年報解析觸發）
+
+- **`.claude/skills/company/SKILL.md`**：對齊 recon 的預分析評估和年報解析流程
+
+- **`references/methodology/scale-classification.md`**：新增「強制數據源」欄位
+  - 大型/上市 = 商業登記 + 年報（強制）+ 財經平台
+
+- **`references/methodology/quality-checklist.md`**：新增 6 項
+  - #8.5-8.8：年報數據檢查（取得、營收來源、重大合約、衝突校正）
+  - #23-24：預分析評估回顧（預估準確度、模型適配）
+
+- **`references/cases/_case-template.md`**：新增「預分析評估回顧」區塊（預估 vs 實際對照表）
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| 年報階段放在 Step 2.5 | 產業分析之後、公司深度之前 | company-deep-dive 是最需要年報數據的階段，年報摘要作為即時 context 直接銜接 |
+| 預分析評估放在 Skill 層 | 非 Agent 階段，零搜尋預算 | 這是流程控制決策，不是研究執行，不需要搜尋 |
+| 模型建議是「資訊性」 | 不強制切換，僅告知使用者 | 無法 mid-session 切換模型；clone 使用者需要在開始前知道最佳配置 |
+| 年報降級標註而非阻斷 | 允許無年報繼續分析，但降級 | 使用者可能有正當理由跳過（如 PDF 取得失敗），不應阻斷整個流程 |
+
 ## [v1.2] — 2026-04-06
 
 修正台灣公司登記資料引用流程——單一來源（opengovtw）曾導致董監事名單和資本額寫入過時資料，現在強制多來源交叉比對。
