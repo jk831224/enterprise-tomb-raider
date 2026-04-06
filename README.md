@@ -181,7 +181,7 @@ enterprise-tomb-raider/
 
 ### 關於分享這件事
 
-[游舒帆 Gipi](https://www.threads.com/@vincentyucw) 在一篇 Threads 貼文中提到：[師父多半只能給你 Beta：真正的 Alpha 為何無法靠「上課」獲取？](https://www.threads.com/@vincentyucw/post/DUmRNUbE3_5)——能被系統化教學的，多半是 Beta（已知框架）；真正的 Alpha（超額洞見）來自實戰中的個人判斷。
+[Vincent Cheng-Wen Yu](https://www.threads.com/@vincentyucw) 在一篇 Threads 貼文中提到：[師父多半只能給你 Beta：真正的 Alpha 為何無法靠「上課」獲取？](https://www.threads.com/@vincentyucw/post/DUmRNUbE3_5)——能被系統化教學的，多半是 Beta（已知框架）；真正的 Alpha（超額洞見）來自實戰中的個人判斷。
 
 我很清楚這個專案分享出來的東西是 Beta 等級：一套可複製的研究框架和 Context Engineering 的實踐方式。但我相信 Beta 也有價值——至少它能幫你省下從零開始摸索的時間，讓你更快到達可以累積自己 Alpha 的起點。
 
