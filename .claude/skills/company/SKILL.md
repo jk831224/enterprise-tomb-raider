@@ -15,9 +15,10 @@ allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
 
 1. 分析目標：`$ARGUMENTS`（如果為空，問使用者想研究哪家公司）
 2. 載入 `references/methodology/path-selection.md` 和 `references/methodology/scale-classification.md`
-3. 快速 Scoping：確認「公司名稱 + 分析目的 + 關注重點」
-   - 分析目的：合作評估 / 投資判斷 / 求職調研 / 競品研究
-   - 特別關注面向（可為空）
+3. 快速 Scoping：
+   - 如果使用者已表達分析目的（如「我要去面試」「評估合作」）→ 記錄目的，直接開始
+   - 如果使用者未表達 → 預設為「全面分析」，直接開始。不主動詢問分析目的
+   - 特別關注面向（可為空）：只在使用者主動提及時記錄
 
 ## 執行
 

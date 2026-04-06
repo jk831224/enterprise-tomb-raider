@@ -300,7 +300,7 @@ Agent 在執行前會讀取相關 case，避免重蹈覆轍。目前已有案例
 1. **Skill/Agent 交接依賴人工**：目前沒有自動化的參數格式驗證。Skill 產出的參數包如果缺少必要欄位，Agent 不會主動報錯，而是用預設值填補。
 2. **Output 無索引**：報告累積後缺乏搜尋與管理機制。
 3. **Case 基數小**：僅 1 個案例，學習效果有限。
-4. **搜尋工具依賴**：研究品質高度依賴 web_search 和 web_fetch 的可用性與回傳品質。
+4. **搜尋工具依賴**：研究品質高度依賴 web_search 和 web_fetch 的可用性與回傳品質。已建立 `references/methodology/fetch-policy.md` 管理已知無法 fetch 的網站黑名單和搜尋降級規則，以減少無效 fetch 的資源浪費。
 
 ### 可能的改善方向
 
