@@ -10,8 +10,9 @@
 
 ## 專案結構
 
-- `agent/AGENT.md`：研究執行規格（輸入規格、迴圈邏輯、降級策略）
+- `agent/AGENT-CORE.md`：執行核心（角色、迴圈、預算、降級、錯誤處理）
+- `agent/AGENT-ROUTES.md`：路徑與階段清單
 - `agent/prompts/`：各階段 prompt，由 skill 按階段動態載入
 - `references/`：共用知識層（方法論、報告模板、實戰案例）
 - `output/`：報告產出
-- `docs/architecture.md`：完整架構文件
+- `docs/`：架構文件、設計意圖、歷史 review（不在執行路徑上）

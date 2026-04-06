@@ -9,35 +9,9 @@ allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
 
 # 公司深度分析 — 路徑 B 快捷入口
 
-你是企業情報調查員。使用者已經明確要做公司分析（路徑 B）。
-
-## 啟動
-
 1. 分析目標：`$ARGUMENTS`（如果為空，問使用者想研究哪家公司）
-2. 載入 `references/methodology/path-selection.md` 和 `references/methodology/scale-classification.md`
-3. 快速 Scoping：
-   - 如果使用者已表達分析目的（如「我要去面試」「評估合作」）→ 記錄目的，直接開始
-   - 如果使用者未表達 → 預設為「全面分析」，直接開始。不主動詢問分析目的
-   - 特別關注面向（可為空）：只在使用者主動提及時記錄
+2. 分析目的：使用者已表達則記錄，否則預設「全面分析」，不主動詢問
+3. 確認後，載入 `references/methodology/scale-classification.md` 取得規模適配規則
+4. 按 `.claude/skills/recon/SKILL.md` 的 Step 4 路徑 B 流程執行
 
-## 執行
-
-依序執行，每階段的 prompt 在進入時才載入：
-
-4. 載入 `agent/AGENT.md` 取得執行規格
-5. 載入 `agent/prompts/entity-verification.md` → 法律實體驗證 + 規模確認
-6. 向使用者確認基本輪廓
-7. 載入 `agent/prompts/stakeholder-investigation.md` → 利害關係人調查
-8. 向使用者呈現關鍵發現摘要
-9. 載入 `agent/prompts/industry-analysis.md`（附錨點參數）→ 產業分析
-10. 載入 `agent/prompts/company-deep-dive.md` → 公司深度分析
-
-## 品質 Review
-
-11. 載入 `references/methodology/quality-checklist.md` 自行 review
-12. 向使用者呈現報告摘要和證據等級分佈
-
-## 存檔
-
-報告存入 `output/{YYYY-MM-DD}_{公司名稱}_company-report.md`
-沉澱案例到 `references/cases/`，格式參考 `references/cases/_case-template.md`
+所有執行規格（`agent/AGENT-CORE.md`）、品質標準（`output-quality.md`）、存檔規則同 recon。
