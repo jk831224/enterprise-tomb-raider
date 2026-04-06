@@ -14,6 +14,11 @@ Enterprise Tomb Raider 幫你在做投資決策、求職評估、合作判斷前
 2. 自主執行多階段研究（搜尋、交叉驗證、關聯實體追蹤）
 3. 產出結構化的繁體中文報告，每個論點標註證據等級和來源
 
+> 你知道霸道總裁小說裡那個經典橋段嗎？「三分鐘內，我要這間公司所有的資料！」
+> 這個專案大概就是在做這件事（笑）。當然，三分鐘可能不夠，但十幾分鐘跑完一輪系統性調查是真的。
+>
+> **認真的提醒**：這套系統基於 LLM + 公開網路資料運作，產出的報告是「結構化的情報研究起點」，不是經過正式查核的盡職調查報告。資料可能有誤差、有遺漏、有時效性問題。請把它當作你決策前的第一輪功課，不是最後一道防線。
+
 ## 專案定位：Context Engineering
 
 **這是一個 Context Engineering 專案**——有意識地設計「什麼資訊、在什麼時機、以什麼結構進入模型的 context window」，讓 AI 在正確的階段擁有正確的能力。
@@ -155,3 +160,32 @@ enterprise-tomb-raider/
 | Prompts 獨立成檔 | 每階段一個檔案，動態載入 | 避免 AGENT-CORE.md 重蹈 SKILL.md 的肥大問題 |
 | References 獨立 | 放在 Skill 和 Agent 之外 | 兩層都要用，放共用層避免雙寫 |
 | Cases 標準結構 | 統一模板 + 四種必記項目 | 讓 Agent 能從歷史中學習 |
+
+---
+
+## Author
+
+**Andrew Yen（顏士傑）**
+
+目前準待業中。近期經歷是 AdTech 領域的產品經理。
+
+職涯從政府標案新創起步，歷經 QA 測試工程師、CRM 專案經驗，到廣告科技 PM。這條不算典型的路徑，讓我累積了跨領域的產品思維：從搞懂政府標書的眉角、建立系統邊界的概念、梳理企業部門 BPMN 流程，到在 AdTech 領域處理平台規劃、流量數據儀表板、跨部門協作的廣告格式開發 SOP。
+
+這個專案源自一個實際痛點：在評估合作方、準備面試、判斷市場機會時，我需要快速建立對一家陌生公司的完整認知。手動搜集和交叉比對公開資訊既耗時又容易遺漏。Enterprise Tomb Raider 是我嘗試用 Context Engineering 解決這個問題的實踐——把結構化的情報蒐集交給 Agent，讓人專注在「這些資訊對我的決策意味著什麼」。
+
+### 方法論啟發
+
+分析方法論的靈感來自 YouTube 頻道[「商談，不廢話」](https://www.youtube.com/@BizTalkNononsense)——用結構化的框架拆解商業情報，而非堆砌資訊。這個頻道讓我意識到：好的公司研究不是「查到越多越好」，而是「問對問題、用對框架」。
+
+在做這個專案之前，我也嘗試過其他 AI Agent 的開發。那些經驗讓我學到一件事：Agent 的價值不在於它能搜多少資料，而在於你怎麼設計它的思考結構。這也是為什麼這個專案最終走向 Context Engineering 而非傳統的 RAG 或 workflow automation。
+
+### 關於分享這件事
+
+[游舒帆 Gipi](https://www.threads.com/@vincentyucw) 在一篇 Threads 貼文中提到：[師父多半只能給你 Beta：真正的 Alpha 為何無法靠「上課」獲取？](https://www.threads.com/@vincentyucw/post/DUmRNUbE3_5)——能被系統化教學的，多半是 Beta（已知框架）；真正的 Alpha（超額洞見）來自實戰中的個人判斷。
+
+我很清楚這個專案分享出來的東西是 Beta 等級：一套可複製的研究框架和 Context Engineering 的實踐方式。但我相信 Beta 也有價值——至少它能幫你省下從零開始摸索的時間，讓你更快到達可以累積自己 Alpha 的起點。
+
+如果你有更好的做法、踩過類似的坑、或者單純想聊聊 Context Engineering，歡迎開 [Issue](../../issues) 或直接聯繫我。一起交流，一起做出更多有趣的東西。
+
+- GitHub：[@jk831224](https://github.com/jk831224)
+- LinkedIn：[Shih-chieh Yen](https://www.linkedin.com/in/shihchiehyen)
