@@ -93,7 +93,8 @@ agent/prompts/
 ├── entity-verification.md        # 法律實體驗證（路徑 B Step 1）
 ├── stakeholder-investigation.md  # 利害關係人調查（路徑 B Step 1.5）
 ├── industry-analysis.md          # 產業深度分析（路徑 A 主體 / 路徑 B Step 2）
-└── company-deep-dive.md          # 公司深度分析（路徑 B Step 3）
+├── company-deep-dive.md          # 公司深度分析（路徑 B Step 3）
+└── decision-brief.md             # 決策簡報（可選，需 User Profile）
 ```
 
 ### 知識層（References）
@@ -109,7 +110,8 @@ references/
 │   └── quality-checklist.md       # 品質檢查清單（Skill Review 時引用）
 ├── templates/
 │   ├── industry-report.md         # 產業報告模板（Agent 產出時引用）
-│   └── company-report.md          # 公司報告模板（Agent 產出時引用）
+│   ├── company-report.md          # 公司報告模板（Agent 產出時引用）
+│   └── decision-brief.md          # 決策簡報模板（Agent 產出時引用）
 └── cases/
     ├── _case-template.md          # Case 標準結構
     └── (案例隨使用累積)
@@ -140,7 +142,7 @@ references/
          │
     /recon: 「要深入某家公司嗎？」
          │
-         ├─ 否 → 流程結束
+         ├─ 否 → Decision Brief（若 profile 存在）→ 流程結束
          └─ 是 → 進入路徑 B（從 Step 1 開始）
 ```
 
@@ -189,7 +191,16 @@ references/
     /recon: 引導使用者用 quality-checklist 檢視
          │
          ▼
+                              ┌─── Agent: Decision Brief ─────────┐
+                              │    載入 decision-brief.md            │
+                              │    基於報告 + User Profile 產出      │
+                              │    角色化決策簡報（零搜尋預算）       │
+                              │    ※ 僅當 user-profile.md 存在      │
+                              └─────────────┬─────────────────────┘
+                                            │
+         ▼
     output/{date}_{company}_{type}.md
+    output/{date}_{company}_decision-brief.md（若有）
 ```
 
 ---

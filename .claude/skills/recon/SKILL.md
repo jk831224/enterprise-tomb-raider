@@ -16,6 +16,64 @@ allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
 
 收到使用者的分析需求後，依序執行以下步驟。不可跳步。
 
+### Step 0: 使用者 Profile 檢查
+
+在做任何事之前，先處理使用者 Profile：
+
+**如果使用者說「更新我的 profile」「修改使用者設定」**：
+- 讀取 `.claude/user-profile.md`，展示目前設定
+- 詢問要修改哪些欄位
+- 更新後確認，然後回到正常流程
+
+**如果 `.claude/user-profile.md` 不存在**：
+- 向使用者發送以下訊息（一次問完）：
+
+```
+在開始分析之前，花 30 秒設定你的背景，完成後每次分析都會額外產出一份「決策簡報」——告訴你這份報告對你具體意味著什麼。
+
+1. 你的角色是？（投資人 / 求職者 / 商業合作夥伴 / 競品分析師 / 其他）
+2. 你的產業背景？（簡述你熟悉的產業）
+3. 你通常基於什麼決策情境來使用這類分析？
+4. 有沒有你特別關注的面向？（可以先跳過）
+
+輸入「跳過」可直接開始分析，之後再設定。
+```
+
+- 使用者回答 → 寫入 `.claude/user-profile.md`，格式：
+
+```markdown
+# User Profile
+
+**建立日期**：[今天日期]
+**最後更新**：[今天日期]
+
+## 角色
+
+[使用者回答]
+
+## 產業背景
+
+[使用者回答]
+
+## 決策情境
+
+[使用者回答]
+
+## 特殊關注
+
+[使用者回答，或「無」]
+
+## 備註
+
+（空）
+```
+
+- 確認：「已儲存。以後每次分析完成後會額外產出決策簡報。說『更新我的 profile』可隨時修改。」
+- 使用者說「跳過」→ 不建立檔案，直接進入 Step 1。下次仍會觸發 onboarding。
+
+**如果 `.claude/user-profile.md` 已存在**：
+- 靜默讀取內容，記住角色和關注點，繼續 Step 1。不提示任何訊息。
+
 ### Step 1: 載入方法論
 
 先讀取以下檔案，取得路徑判斷和規模分類的規則：
@@ -82,10 +140,21 @@ Scoping 完成 = 能填完以下參數包：
    - 規模分類是否導致了合理的分析深度
    - 利害關係人調查是否達到「結論」而非「清單」
 
+### Step 5.5: 決策簡報（Decision Brief）
+
+**前提**：`.claude/user-profile.md` 存在。如果不存在，跳過此步驟。
+
+1. 讀取 `.claude/user-profile.md` 取得使用者角色和關注點
+2. 載入 `agent/prompts/decision-brief.md`
+3. 基於已完成的報告 + User Profile，產出決策簡報
+4. 此階段搜尋預算為零——不做任何 web_search 或 web_fetch
+5. 向使用者呈現決策簡報
+
 ### Step 6: 存檔與案例沉澱
 
 1. 報告存入 `output/`，檔名格式：`{YYYY-MM-DD}_{名稱}_{report-type}.md`
-2. 載入 `references/cases/_case-template.md`，沉澱本次分析的案例到 `references/cases/`
+2. 如果有產出決策簡報，一併存入 `output/`，檔名格式：`{YYYY-MM-DD}_{名稱}_decision-brief.md`
+3. 載入 `references/cases/_case-template.md`，沉澱本次分析的案例到 `references/cases/`
 
 ## 如果使用者給了 $ARGUMENTS
 

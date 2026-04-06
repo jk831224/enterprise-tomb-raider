@@ -9,7 +9,9 @@
       "Write(output/**)",
       "Write(references/cases/**)",
       "Edit(output/**)",
-      "Edit(references/cases/**)"
+      "Edit(references/cases/**)",
+      "Write(.claude/user-profile.md)",
+      "Edit(.claude/user-profile.md)"
     ]
   }
 }

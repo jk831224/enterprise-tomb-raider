@@ -6,7 +6,7 @@
 
 `{YYYY-MM-DD}_{名稱}_{report-type}.md`
 
-report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation`
+report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief`
 
 ## 必要元素
 
@@ -22,3 +22,12 @@ report-type 只能是：`industry-report` / `company-report` / `entity-verificat
 ## 語言
 
 繁中；專有名詞首次附英文；財務數據標年份+幣別；區分事實與觀點。
+
+## Decision Brief 特殊規則
+
+Decision Brief（決策簡報）除了上述通用規則外，還需遵守：
+
+1. **引用完整性**：每個觀點必須引用主報告中的具體章節或數據，不得引入報告外資訊
+2. **角色一致性**：分析鏡頭必須與 User Profile 的角色設定一致
+3. **證據等級繼承**：主報告的證據標記必須原封不動繼承，不得升級或降級
+4. **零搜尋預算**：Decision Brief 階段不得執行任何 web_search 或 web_fetch
