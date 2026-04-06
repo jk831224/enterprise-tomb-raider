@@ -2,6 +2,10 @@
 
 一套 Context Engineering 驅動的情報研究工作流。零程式碼，純 Markdown 架構，在 Claude Code 原生環境中運行。
 
+> **使用前請先 ⭐ Star 或 Fork**
+> 這是我的個人作品集專案。如果你覺得有用，請先 Star 或 Fork 再使用，讓我知道誰在用它。
+> 有任何想法、建議或使用心得，歡迎開 [Issue](../../issues) 交流。
+
 ## 這是什麼
 
 Enterprise Tomb Raider 幫你在做投資決策、求職評估、合作判斷前，系統性地完成情報研究。你告訴它你想了解的產業或公司，它會：
