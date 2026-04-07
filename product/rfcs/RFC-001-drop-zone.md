@@ -152,15 +152,30 @@
 
 ### 實測結果
 
-> **待回填**。首次跑有 Drop Zone 的真實案例後填寫。
+**首次實測完成：2026-04-08，雲端資安代理商 B**
+
+⚠️ **重要 caveat**：本次實測 **drop zone 為空**（使用者未餵入任何檔案），因此只能量測「overhead-only 情境」，**無法驗證**預估中「有年報時 −5 to −7 search、−2 to −3 fetch」的節省效應。完整分析見實測報告。
 
 | 維度 | 預估 | 實測 | 偏差 | 備註 |
 |------|------|------|------|------|
-| | | | | |
+| 預載 token | +300 | +~350 | +17% | Step 3.5 + drop-zone.md 指向，接近預估 |
+| 新增 Glob 呼叫 | +1 | **+1** ✅ | 0 | 精準 |
+| 新增 Read 呼叫 | +1-2 | +0 | 低於預估 | Drop zone 空時無 MANIFEST / 筆記可讀 |
+| 搜尋節省（有年報時）| −5 to −7 | **未驗證** | — | Drop zone 為空，此情境未觸發 |
+| Fetch 節省（有年報時）| −2 to −3 | **未驗證** | — | 同上 |
+| 命中率變化 | 餵資時提升 | **未驗證** | — | 同上 |
+| 證據等級分布變化 | 資料缺失下降 | **未明顯變化** | — | 案例 B的資料缺失源自非上市財務不透明，非 drop zone 能解 |
 
-**測試案例**：待定（建議：重跑個人理財 SaaS A，比較 v1.1 baseline 與 v1.4 + drop zone 的差異）
-**測試日期**：TBD
-**對照 baseline**：[baseline-v1.1-token-usage.md](../perf/baseline-v1.1-token-usage.md)
+**測試案例**：雲端資安代理商 B（Cloudflare 台灣唯一 ASDP、微型→準中型邊界）
+**測試日期**：2026-04-08
+**對照 baseline**：[baseline-v1.1-token-usage.md](../perf/baseline-v1.1-token-usage.md)（個人理財 SaaS A，v1.1 era）
+**完整實測報告**：[`2026-04-08_caseB_RFC-001-perf.md`](../perf/2026-04-08_caseB_RFC-001-perf.md)
+
+### 實測關鍵發現
+
+1. **Drop Zone 空情境的 overhead 極小**：Step 3.5 只產生 1 次 Glob + ~300 預載 token，對執行時間的影響 <1 秒。RFC-001 設計決策 A（結構化目錄 vs MCP server）的正確性得到驗證
+2. **本次 search/fetch 超預算與 Drop Zone 無關**：Entity verification 階段超預算的主因是（a）資本額衝突觸發 v1.2 多源驗證、（b）發現關聯法人（系統整合商 B-Affiliate）、（c）官網 Cloudflare WAF 403 被迫改用媒體報導 — 這三者都是**案例本身的複雜度**，baseline v1.1 時代也會發生
+3. **Drop Zone 的核心價值需要「使用者預先知道要餵什麼」**：對於「未知的關聯法人發現」、「資料衝突的交叉驗證」這類**調查型需求**，Drop Zone 無法提供任何節省。這個洞察應該補回 §2「觀察到的問題」章節
 
 ## 7. 風險
 

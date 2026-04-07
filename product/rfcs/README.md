@@ -8,6 +8,7 @@
 | 編號 | 標題 | 狀態 | 對應版本 | 主題 |
 |------|------|------|---------|------|
 | [RFC-001](RFC-001-drop-zone.md) | Drop Zone — 使用者餵資區 | Implemented | v1.4 | 把 AI 從「不可靠抓取者」轉成「可靠整合者」 |
+| [RFC-002](RFC-002-hit-rate-two-dimensional.md) | 命中率雙維度改進（Hit Rate + Exploration Ratio）| Draft | v1.5（候選）| 解決單維度命中率對「高聚焦調查」的假陽性警訊 |
 
 ## 編號慣例
 
