@@ -110,6 +110,36 @@ Scoping 完成 = 能填完以下參數包：
 特殊關注：[使用者指定的重點，可為空]
 ```
 
+### Step 3.5: Drop Zone Scan
+
+**目的**：在進入研究執行前，掃描使用者提供的 ground truth 檔案，把它們納入後續所有階段的最高優先級資料源。
+
+**完整規範**：見 `references/methodology/drop-zone.md`。
+
+**執行動作**：
+
+1. 用 Glob 掃描 `input/{target}/**/*`，其中 `{target}` 是 Step 3 確定的目標名稱（中文原樣，不羅馬化）
+2. 如果目錄不存在或為空 → 記錄「drop zone empty」，靜默繼續 Step 4，**不打擾使用者**
+3. 如果目錄存在且有檔案：
+   - 讀取 `MANIFEST.md`（如有）
+   - 讀取所有 `.md` / `.txt` 筆記類檔案（小於 50KB）
+   - PDF / 圖片 / HTML **不在此步驟讀取**，僅記錄路徑與推測類型
+   - 將「drop zone manifest」（檔案清單 + 標註 + 已讀文字內容）作為 context 帶入後續所有階段
+4. 向使用者呈現一句話摘要：
+   ```
+   📂 Drop zone：於 input/{target}/ 找到 {N} 份檔案：
+   - {filename}（{推測類型}）
+   - {filename}（{推測類型}）
+   ...
+   將以最高優先級納入分析。
+   ```
+5. 如果有檔案類型推測不出且無 MANIFEST 標註，問**一次**：「`{filename}` 是什麼類型的資料？」收到答覆後繼續，不重複問
+
+**注意**：
+- Drop zone 檔案不豁免交叉驗證，仍須遵守 v1.2 多來源比對規則（完整邏輯見 `drop-zone.md`「交叉驗證規則」章節）
+- 此步驟搜尋預算為零，僅做本地檔案掃描
+- 此步驟無論路徑 A 或路徑 B 都執行
+
 ### Step 4: 進入研究執行
 
 載入 `agent/AGENT-CORE.md` 取得執行核心規格，載入 `agent/AGENT-ROUTES.md` 取得階段順序，然後根據路徑依序載入對應的階段 prompt：
@@ -163,7 +193,7 @@ Scoping 完成 = 能填完以下參數包：
 
 ### 模型建議
 
-根據 `references/cases/case-個人理財 SaaS A-model-comparison.md` 的決策樹：
+根據 `product/perf/baseline-v1.1-model-comparison.md` 的決策樹：
 - 大型/上市 + 年報需解析 → 建議 Opus 4.6 (1M)（需完整 context 保留年報數據至最終報告）
 - 中型 → 建議 Sonnet 4.6（性價比最佳，品質差異在可接受範圍）
 - 微型 → 建議 Sonnet 4.6（Haiku 不建議用於全流程）
@@ -178,13 +208,17 @@ Scoping 完成 = 能填完以下參數包：
 ### 年報取得提示
 
 僅當年報計畫為「強制」或「建議」時顯示：
-「如果你已下載年報 PDF，請提供檔案路徑（如 `/Users/you/Downloads/annual-report.pdf`），可大幅提升分析品質和速度。輸入『跳過』由系統自行搜尋取得。」
+
+**先檢查 Step 3.5 的 drop zone 掃描結果**：
+- 若 drop zone 已找到年報 PDF（檔名含 `annual` `年報` `10-k` 或 MANIFEST 標註為年報）→ 顯示「✅ 將使用 drop zone 中的年報：`input/{target}/{filename}`」，**不再詢問**
+- 若 drop zone 沒有年報 PDF → 顯示「如果你已下載年報 PDF，可放入 `input/{target}/` 後重新執行；或現在直接提供檔案路徑（如 `/Users/you/Downloads/annual-report.pdf`）；或輸入『跳過』由系統自行搜尋取得。」
 ```
 
 **使用者回應處理**：
 - 「繼續」/「開始」/「好」→ 進入 stakeholder-investigation
 - 「跳過年報」→ 標記年報為 skip，後續 company-deep-dive 會降級標註受影響維度
 - 提供 PDF 路徑 → 記錄路徑，annual-report-analysis 階段直接 Read
+- Drop zone 已自動找到年報 → 直接記錄路徑進入下一階段，無需使用者確認
 - 其他調整要求 → 按使用者意圖修改參數後繼續
 
 **注意**：此步驟不應超過 1 輪對話。如果使用者只說「繼續」，不追問，直接進入下一階段。

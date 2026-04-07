@@ -2,6 +2,57 @@
 
 所有版本變更紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/)。
 
+> v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
+
+## [v1.4] — 2026-04-07
+
+兩大變更：引入 **Drop Zone**（使用者餵資區）把 AI 從「不可靠的抓取者」轉成「可靠的整合者」；新增 **product/** 目錄建立 PM 工件層（PRD、RFC、效能追蹤），讓迭代過程本身可審視。
+
+### 新增
+
+- **Drop Zone — `input/{target}/`**（詳見 [RFC-001](product/rfcs/RFC-001-drop-zone.md)）
+  - 使用者可預先把年報 PDF、商工登記截圖、LinkedIn 截圖、訪談筆記丟入 `input/{目標名稱}/`
+  - Agent 在新增的 **Step 3.5: Drop Zone Scan** 掃描該目錄，把檔案視為最高優先級資料源納入後續所有階段
+  - **不豁免交叉驗證**：drop zone 檔案算 1 個來源，關鍵欄位仍須 web 佐證（保留 v1.2 安全保證）
+  - 隱私預設：`input/*/` 被 gitignore 排除
+  - 對應方法論：`references/methodology/drop-zone.md`
+
+- **PM 工件層 — `product/` 目錄**
+  - `product/PRD.md`：主 PRD，首次撰寫，回溯 v1.0–v1.4 設計脈絡
+  - `product/rfcs/`：設計變更紀錄目錄，含模板、索引、RFC-001
+  - `product/perf/`：效能追蹤目錄，含方法論、命中率定義、baseline 報告
+
+### 搬移
+
+- `docs/architecture.md` → `product/architecture.md`（git mv，history 保留）
+- `docs/design-rationale.md` → `product/design-rationale.md`
+- `docs/flow-diagram.md` → `product/flow-diagram.md`
+- `references/cases/case-個人理財 SaaS A-token-usage-report.md` → `product/perf/baseline-v1.1-token-usage.md`（原檔 gitignored，移動後加入 tracking）
+- `references/cases/case-個人理財 SaaS A-model-comparison.md` → `product/perf/baseline-v1.1-model-comparison.md`
+
+### 修改
+
+- **`agent/AGENT-CORE.md`**：數據源優先序最前面加入「使用者提供文件（input/）」；警告句從「不要載入 docs/」改為「不要載入 product/」
+- **`.claude/skills/recon/SKILL.md`**：新增 Step 3.5 Drop Zone Scan；更新 Step 4.0.5 讓年報路徑邏輯先檢查 drop zone；更新 model-comparison 路徑引用
+- **`.claude/skills/company/SKILL.md`、`industry/SKILL.md`**：加入 Drop Zone Scan 階段
+- **`.claude/rules/output-quality.md`**：加入 drop zone 引用格式 `[來源: input/{target}/{filename}]`、降一級規則、metadata 紀錄要求；順手修正 `[部分證據]` 的破損字元
+- **`.gitignore`**：新增 `input/*/` 排除規則
+- **`CLAUDE.md`**：更新專案結構描述，加入 `input/` 和 `product/` 說明
+- **`README.md`**：專案結構樹更新；所有 `docs/` 路徑引用改為 `product/`
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| Drop zone 檔案是否豁免交叉驗證 | 不豁免（算 1 個來源） | 防止過時截圖污染報告，v1.2 的安全保證不因來源類型放寬 |
+| 目錄 slug 命名 | 中文原樣 | 使用者直覺優先；macOS/Linux 支援無問題 |
+| MANIFEST.md 強制 vs 選用 | 選用 | 降低摩擦；模糊時 agent 問一次 |
+| PM 工件層位置 | 新開 `product/` 而非擴張 `docs/` | 工件集中、對作品集讀者清楚；git history 接受短期雜訊 |
+| RFC 格式 vs ADR | RFC（含效能預估/實測） | 決策過程比架構記錄更重要；效能追蹤內建 |
+| CHANGELOG 與 RFC 的分工 | 共存，CHANGELOG = user-facing，RFC = engineering 視角 | 功能不重疊 |
+| Perf baseline 策略 | 沿用 v1.1 個人理財 SaaS A案報告 | 避免重建 baseline 的額外成本 |
+| v1.0–v1.3 是否追溯補 RFC | 不補 | 避免考古成本；歷史決策保留在 CHANGELOG |
+
 ## [v1.3] — 2026-04-07
 
 上市遊戲營運商 C（大型上市公司）分析案例暴露系統性缺口：年報 PDF 是 must have 但未強制、營收結構被誤判（90%→實際 74%）、無預分析成本評估。本版新增「預分析評估」和「年報解析」兩大機制，確保不同規模公司獲得一致品質的分析。

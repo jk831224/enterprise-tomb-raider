@@ -16,5 +16,6 @@
 - `agent/AGENT-ROUTES.md`：路徑與階段清單
 - `agent/prompts/`：各階段 prompt，由 skill 按階段動態載入
 - `references/`：共用知識層（方法論、報告模板、實戰案例）
+- `input/`：Drop Zone — 使用者預先餵入的年報、截圖、筆記（v1.4 新增，gitignored）
 - `output/`：報告產出
-- `docs/`：架構文件、設計意圖、歷史 review（不在執行路徑上）
+- `product/`：PM 工件層 — PRD、架構文件、流程圖、RFC（設計變更紀錄）、效能報告。**不在執行路徑上**，agent 不應載入
