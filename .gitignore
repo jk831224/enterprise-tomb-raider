@@ -3,14 +3,12 @@
 docs/github-portfolio-setup.md
 .claude/user-profile.md
 
-# 案例沉澱：含公司特定分析結果，不推上 public repo
-# _case-template.md 為結構模板，已 tracked，不受此規則影響
+# Cases：每家公司/產業的完整工作目錄（含真實姓名與機敏資料）
+# cases/README.md 和 cases/_case-template.md 為說明文件，已 tracked
+cases/*/
+
+# === 以下為向後相容，舊路徑仍 gitignore（遷移期保留）===
 references/cases/case-*.md
-
-# 分析報告產出：含公司特定資料
 output/*.md
-
-# Drop zone：使用者提供的機敏資料（年報、訪談筆記、截圖等）
-# input/README.md 和 input/.gitkeep 為使用說明，已 tracked，不受此規則影響
 input/*/
 

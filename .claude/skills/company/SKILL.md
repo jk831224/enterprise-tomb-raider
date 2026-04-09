@@ -18,7 +18,7 @@ allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
 1. 分析目標：`$ARGUMENTS`（如果為空，問使用者想研究哪家公司）
 2. 分析目的：使用者已表達則記錄，否則預設「全面分析」，不主動詢問
 3. 確認後，載入 `references/methodology/scale-classification.md` 取得規模適配規則
-4. **執行 `.claude/skills/recon/SKILL.md` 的 Step 3.5 Drop Zone Scan**（掃描 `input/{公司名稱}/`）
+4. **執行 `.claude/skills/recon/SKILL.md` 的 Step 3.5 Drop Zone Scan**（掃描 `cases/{公司名稱}/input/`）
 5. 按 `.claude/skills/recon/SKILL.md` 的 Step 4 路徑 B 流程執行，**包含**：
    - entity-verification 完成後，執行 **Step 4.0.5 預分析評估**（見 recon/SKILL.md）
    - industry-analysis 完成後，依規模執行 **Step 4.2.5 年報解析**（見 recon/SKILL.md）

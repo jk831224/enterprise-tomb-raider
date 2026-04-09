@@ -1,17 +1,17 @@
 # Output 報告品質規則
 
-當你在 `output/` 目錄下寫入或編輯報告時，必須遵守以下規則：
+當你在 `cases/{目標}/` 目錄下寫入或編輯報告時，必須遵守以下規則：
 
 ## 檔名格式
 
 `{YYYY-MM-DD}_{名稱}_{report-type}.md`
 
-report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief`
+report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief` / `supplement`
 
 ## 必要元素
 
 1. **來源追蹤**：每個關鍵論點標註資料來源（URL 或報告名稱 + 年份）
-   - **Drop zone 來源引用格式**：`[來源: input/{target}/{filename}]`，PDF 請標註頁碼，截圖請標註截圖日期。Drop zone 不豁免交叉驗證，完整規則見 `references/methodology/drop-zone.md`
+   - **Drop zone 來源引用格式**：`[來源: cases/{target}/input/{filename}]`，PDF 請標註頁碼，截圖請標註截圖日期。Drop zone 不豁免交叉驗證，完整規則見 `references/methodology/drop-zone.md`
 2. **證據等級標記**：
    - 充分證據（多來源交叉驗證）→ 正常陳述
    - 部分證據（單一來源或間接推論）→ 標註 `[部分證據]`

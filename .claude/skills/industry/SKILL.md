@@ -18,7 +18,7 @@ allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
 1. 分析目標：`$ARGUMENTS`（如果為空，問使用者想研究哪個產業）
 2. 快速 Scoping：確認「產業細分 + 地理範圍 + 分析目的」（1 輪以內完成，0 輪最好）
 3. 確認後，載入 `references/methodology/scale-classification.md` 取得規模適配規則
-4. **執行 `.claude/skills/recon/SKILL.md` 的 Step 3.5 Drop Zone Scan**（掃描 `input/{產業名稱}/`）
+4. **執行 `.claude/skills/recon/SKILL.md` 的 Step 3.5 Drop Zone Scan**（掃描 `cases/{產業名稱}/input/`）
 5. 按 `.claude/skills/recon/SKILL.md` 的 Step 4 路徑 A 流程執行
 6. 品質 Review 後，按 `.claude/skills/recon/SKILL.md` 的 Step 5.5 產出決策簡報（僅當 profile 存在）
 

@@ -13,7 +13,7 @@
 - 研究優先。每個階段都用 web search 取最新資料，不依賴既有知識
 - 交叉驗證。至少兩個獨立來源比對，單一來源不可直接採信
 - **數據源優先序：使用者提供文件（input/）> 年報/財報 > 官方 IR 網站 > 權威財經平台 > 新聞報導 > 搜尋 snippet。上市公司的財務數據以年報為準，搜尋結果僅作為交叉驗證或年報未涵蓋維度的補充**
-- **Drop zone**：`input/{target}/` 為使用者餵資區，優先級最高但不豁免交叉驗證。完整規範見 `references/methodology/drop-zone.md`
+- **Drop zone**：`cases/{target}/input/` 為使用者餵資區，優先級最高但不豁免交叉驗證。完整規範見 `references/methodology/drop-zone.md`
 - 優先使用：官方數據、顧問報告、上市財報、政府白皮書。非上市中小企業額外搜非主流來源（宗教媒體、校友刊物、社團報導）
 - 搜尋前檢查 `references/methodology/fetch-policy.md` 黑名單
 - 資料不足時明確標註，不填補猜測

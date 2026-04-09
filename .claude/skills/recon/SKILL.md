@@ -118,7 +118,7 @@ Scoping 完成 = 能填完以下參數包：
 
 **執行動作**：
 
-1. 用 Glob 掃描 `input/{target}/**/*`，其中 `{target}` 是 Step 3 確定的目標名稱（中文原樣，不羅馬化）
+1. 用 Glob 掃描 `cases/{target}/input/**/*`，其中 `{target}` 是 Step 3 確定的目標名稱（中文原樣，不羅馬化）
 2. 如果目錄不存在或為空 → 記錄「drop zone empty」，靜默繼續 Step 4，**不打擾使用者**
 3. 如果目錄存在且有檔案：
    - 讀取 `MANIFEST.md`（如有）
@@ -127,7 +127,7 @@ Scoping 完成 = 能填完以下參數包：
    - 將「drop zone manifest」（檔案清單 + 標註 + 已讀文字內容）作為 context 帶入後續所有階段
 4. 向使用者呈現一句話摘要：
    ```
-   📂 Drop zone：於 input/{target}/ 找到 {N} 份檔案：
+   📂 Drop zone：於 cases/{target}/input/ 找到 {N} 份檔案：
    - {filename}（{推測類型}）
    - {filename}（{推測類型}）
    ...
@@ -210,8 +210,8 @@ Scoping 完成 = 能填完以下參數包：
 僅當年報計畫為「強制」或「建議」時顯示：
 
 **先檢查 Step 3.5 的 drop zone 掃描結果**：
-- 若 drop zone 已找到年報 PDF（檔名含 `annual` `年報` `10-k` 或 MANIFEST 標註為年報）→ 顯示「✅ 將使用 drop zone 中的年報：`input/{target}/{filename}`」，**不再詢問**
-- 若 drop zone 沒有年報 PDF → 顯示「如果你已下載年報 PDF，可放入 `input/{target}/` 後重新執行；或現在直接提供檔案路徑（如 `/Users/you/Downloads/annual-report.pdf`）；或輸入『跳過』由系統自行搜尋取得。」
+- 若 drop zone 已找到年報 PDF（檔名含 `annual` `年報` `10-k` 或 MANIFEST 標註為年報）→ 顯示「✅ 將使用 drop zone 中的年報：`cases/{target}/input/{filename}`」，**不再詢問**
+- 若 drop zone 沒有年報 PDF → 顯示「如果你已下載年報 PDF，可放入 `cases/{target}/input/` 後重新執行；或現在直接提供檔案路徑（如 `/Users/you/Downloads/annual-report.pdf`）；或輸入『跳過』由系統自行搜尋取得。」
 ```
 
 **使用者回應處理**：
@@ -260,9 +260,11 @@ Scoping 完成 = 能填完以下參數包：
 
 ### Step 6: 存檔與案例沉澱
 
-1. 報告存入 `output/`，檔名格式：`{YYYY-MM-DD}_{名稱}_{report-type}.md`
-2. 如果有產出決策簡報，一併存入 `output/`，檔名格式：`{YYYY-MM-DD}_{名稱}_decision-brief.md`
-3. 載入 `references/cases/_case-template.md`，沉澱本次分析的案例到 `references/cases/`
+1. 建立 `cases/{目標名稱}/` 目錄（如不存在）
+2. 報告存入 `cases/{目標名稱}/company-report.md`（或 `industry-report.md`），含 Version History v1.0
+3. 如果有產出決策簡報，存入 `cases/{目標名稱}/decision-brief.md`
+4. 載入 `cases/_case-template.md`，沉澱本次分析的案例到 `cases/{目標名稱}/case-log.md`
+5. 提示使用者：「後續有新資料（訪談筆記、PDF、新聞稿），可放入 `cases/{目標名稱}/input/` 後執行 `/supplement {目標名稱}` 增量更新。」
 
 ## 如果使用者給了 $ARGUMENTS
 
