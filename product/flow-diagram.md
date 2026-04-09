@@ -1,6 +1,6 @@
 # Enterprise Tomb Raider — 系統流程圖
 
-> 最後更新：2026-04-07（v1.3）
+> 最後更新：2026-04-10（v1.5）
 > 本文件使用 Mermaid 格式。在 GitHub 上可直接渲染，或使用 [Mermaid Live Editor](https://mermaid.live/) 檢視。
 
 ---
@@ -46,12 +46,15 @@ graph TB
             T_CR["company-report.md"]
             T_DB["decision-brief.md"]
         end
-        CASES["cases/<br/>_case-template.md<br/>+ 累積案例"]
     end
 
-    subgraph OUTPUT["產出層"]
+    subgraph CASES_LAYER["案例層 — cases/"]
+        CASE_TMPL["_case-template.md"]
+        CASE_DIR["{target}/<br/>input/ · report · brief<br/>supplements/ · case-log"]
+    end
+
+    subgraph OUTPUT["品質層"]
         RULES[".claude/rules/<br/>output-quality.md"]
-        OUT["output/<br/>{date}_{name}_{type}.md"]
     end
 
     CMD --> S_RECON
@@ -71,10 +74,10 @@ graph TB
     P_CD -.->|"引用"| T_CR
     P_DB -.->|"引用"| T_DB
     P_IA -.->|"引用"| T_IR
-    CORE -.->|"引用"| CASES
-    PROMPTS -->|"產出"| OUT
-    OUT -.->|"受約束"| RULES
-    PROMPTS -->|"沉澱"| CASES
+    CORE -.->|"引用"| CASE_DIR
+    PROMPTS -->|"產出"| CASE_DIR
+    CASE_DIR -.->|"受約束"| RULES
+    PROMPTS -->|"沉澱"| CASE_DIR
     S_RECON -.->|"Review"| M_QC
 ```
 
@@ -130,9 +133,9 @@ flowchart TD
     DB_CHECK -->|"存在"| DB["Step 5.5: Decision Brief<br/>載入 decision-brief.md<br/>🚫 零搜尋預算<br/>引用 decision-brief.md 模板<br/>角色化重新解讀"]
     DB_CHECK -->|"不存在"| SAVE
 
-    DB --> SAVE["Step 6: 存檔 + 案例沉澱<br/>→ output/{date}_{name}_company-report.md<br/>→ output/{date}_{name}_decision-brief.md<br/>→ references/cases/case-{name}.md"]
+    DB --> SAVE["Step 6: 存檔 + 案例沉澱<br/>→ cases/{name}/company-report.md（含 Version History）<br/>→ cases/{name}/decision-brief.md<br/>→ cases/{name}/case-log.md"]
 
-    SAVE --> DONE(["完成"])
+    SAVE --> SUPP_HINT(["完成<br/>★ 後續有新資料 →<br/>/supplement {name}"])
 
     style ASSESS fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
     style AR fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
@@ -163,7 +166,7 @@ flowchart TD
     DB_A_CHECK -->|"存在"| DB_A["Decision Brief<br/>（產業版）"]
     DB_A_CHECK -->|"不存在"| SAVE_A
 
-    DB_A --> SAVE_A["存檔<br/>output/{date}_{name}_industry-report.md"]
+    DB_A --> SAVE_A["存檔<br/>cases/{name}/industry-report.md"]
     SAVE_A --> DONE_A(["完成"])
 ```
 

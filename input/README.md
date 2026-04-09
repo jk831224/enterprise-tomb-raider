@@ -59,12 +59,12 @@ input/
 
 1. **最高優先級**：drop zone 檔案的優先序高於任何 web 搜尋結果，但仍須遵守交叉驗證規則
 2. **仍須交叉驗證**：drop zone 檔案算 1 個來源。涉及登記資料（董監事、資本額、地址）等關鍵欄位時，agent 仍會找至少 1 個獨立 web 來源比對
-3. **引用格式**：報告中會以 `[來源: input/{target}/{filename}]` 標註
+3. **引用格式**：報告中會以 `[來源: cases/{target}/input/{filename}]` 標註
 4. **時間戳重要**：截圖類請在檔名或 MANIFEST 標註截圖日期，避免陳舊資料污染報告
 
 ### 隱私
 
-`input/{target}/` 子目錄被 `.gitignore` 排除，**不會推上 git**。你可以安心放年報、合約、訪談筆記這類敏感檔案。
+`cases/{target}/` 子目錄被 `.gitignore` 排除，**不會推上 git**。你可以安心放年報、合約、訪談筆記這類敏感檔案。
 
 只有這份 `README.md` 和 `.gitkeep` 會被 tracked。
 

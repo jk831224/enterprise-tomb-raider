@@ -4,6 +4,66 @@
 
 > v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
 
+## [v1.5] — 2026-04-10
+
+三大變更：**統一 `cases/` 目錄**（取代 `input/` + `output/` + `references/cases/` 三散結構）、新增 **`/supplement` 增量更新機制**（分析完成後追加新資料不需重跑全流程）、新增**訪談筆記結構化 Schema**（讓 Agent 根據 confidence 等級自動判斷證據處理方式）。
+
+### 新增
+
+- **`cases/` 統一目錄**（詳見 [RFC-003](product/rfc/RFC-003-cases-and-supplement.md)）
+  - 每家公司/產業一個資料夾：`cases/{目標名稱}/`
+  - 內含 `input/`（drop zone）、`company-report.md`（含 Version History）、`decision-brief.md`、`supplements/`（增量 memos）、`case-log.md`
+  - `ls cases/` 一眼看到所有分析過的目標
+  - `cases/*/` 被 gitignore 排除，`cases/README.md` 和 `cases/_case-template.md` 已 tracked
+
+- **`/supplement` Skill — 增量更新**
+  - 讀取既有報告 + 新 drop zone 檔案 → 產出 Supplement Memo + 更新報告 Version History
+  - 搜尋預算 5 search / 2 fetch（不重跑全流程）
+  - 三類發現：新發現、衝突、證據等級變動
+  - 可選：同時重新產出 Decision Brief（零搜尋預算）
+
+- **Version History（版本鏈）**
+  - 報告 metadata 追蹤版本歷程：v1.0 → v1.1 → v1.2...
+  - `/supplement` 執行時自動追加新行，不修改主報告正文
+
+- **訪談筆記結構化 Schema**（`references/methodology/interview-notes-schema.md`）
+  - YAML frontmatter 定義 `type`、`source`、`confidence`
+  - Agent 根據 confidence 等級（low/medium/high）自動決定證據處理方式
+
+### 搬移
+
+- `output/*.md` → `cases/{目標名稱}/`（報告進入統一目錄）
+- `references/cases/case-*.md` → `cases/{目標名稱}/case-log.md`（案例沉澱進入統一目錄）
+- `references/cases/_case-template.md` → `cases/_case-template.md`
+
+### 修改
+
+- **`.gitignore`**：新增 `cases/*/` 取代 `input/*/` + `output/*.md` + `references/cases/case-*.md`
+- **`CLAUDE.md`**：更新專案結構 + 新增 `/supplement` 使用說明
+- **`agent/AGENT-CORE.md`**：`input/{target}/` → `cases/{target}/input/`
+- **`.claude/skills/recon/SKILL.md`**：Step 3.5/4/6 路徑更新 + Step 6 加 supplement 提示
+- **`.claude/skills/company/SKILL.md`、`industry/SKILL.md`**：drop zone 路徑更新
+- **`references/methodology/drop-zone.md`**：全部路徑更新
+- **`.claude/rules/output-quality.md`**：路徑更新 + report-type 加 `supplement`
+- **`references/templates/company-report.md`**：加 Version History 區塊
+- **`input/README.md`**：改為 redirect 提示，指向 `cases/README.md`
+- **`README.md`**：專案結構、產出、案例學習段落全面更新
+- **`product/architecture.md`**：架構圖、案例層、settings 段落更新
+- **`product/flow-diagram.md`**：Mermaid 圖更新（output → cases）
+- **`product/PRD.md`**：數據源優先序路徑 + 系統概覽圖更新
+- **`references/methodology/fetch-policy.md`**：案例沉澱路徑更新
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| 目錄結構 | 合併 `cases/`（而非 input+output 分開） | 使用者直覺，一個 `ls` 看全貌 |
+| 增量更新 | `/supplement`（而非全量重跑） | 節省 20+ 分鐘和搜尋預算 |
+| 版本控制 | 版本鏈（而非多檔案） | 主報告不分裂，supplement memo 獨立追蹤 |
+| 訪談筆記 | 結構化 schema（而非 free-form） | 讓 agent 自動判斷 confidence → 證據等級 |
+| 適用範圍 | 通用化（所有 `/company` 和 `/industry`） | 非一次性需求 |
+| 主報告是否被修改 | 不修改正文，只改 Version History | 保持原版完整性，增量內容獨立在 supplement memo |
+
 ## [v1.4] — 2026-04-07
 
 兩大變更：引入 **Drop Zone**（使用者餵資區）把 AI 從「不可靠的抓取者」轉成「可靠的整合者」；新增 **product/** 目錄建立 PM 工件層（PRD、RFC、效能追蹤），讓迭代過程本身可審視。
