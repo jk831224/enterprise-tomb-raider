@@ -1,4 +1,4 @@
-# Enterprise Tomb Raider — 企業祖墳探勘器
+# Enterprise Tomb Raider
 
 一套 Context Engineering 驅動的情報研究工作流。零程式碼，純 Markdown 架構，在 Claude Code 原生環境中運行。
 
