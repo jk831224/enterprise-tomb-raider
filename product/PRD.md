@@ -1,8 +1,8 @@
 # Enterprise Tomb Raider — Product Requirements Document
 
 > **狀態**：Living document
-> **版本**：v1.4 對應
-> **最後更新**：2026-04-07
+> **版本**：v1.6 對應
+> **最後更新**：2026-04-12
 > **作者**：Andrew Yen
 > **讀者**：產品迭代決策者（自己）+ 作品集評估者（雇主、面試官）
 
@@ -185,7 +185,9 @@
 | v1.1 | User Profile + Decision Brief | — |
 | v1.2 | 強制多來源交叉驗證 | — |
 | v1.3 | 預分析評估 + 年報解析 | — |
-| **v1.4** | **Drop Zone + PM 工件層** | [RFC-001](rfcs/RFC-001-drop-zone.md) |
+| v1.4 | Drop Zone + PM 工件層 | [RFC-001](rfcs/RFC-001-drop-zone.md) |
+| v1.5 | cases/ 統一目錄 + /supplement 增量更新 | [RFC-003](rfc/RFC-003-cases-and-supplement.md) |
+| **v1.6** | **Cases Registry — CRM 式企業分類 DB** | — |
 
 > v1.0–v1.3 沒有對應 RFC（在 RFC 制度建立前）。歷史決策見 `CHANGELOG.md` 的「設計決策」表格。
 
@@ -194,7 +196,7 @@
 | 候選功能 | 一句話描述 | 估計影響 |
 |---------|----------|---------|
 | **Adversarial cross-checking** | 強制 agent 為每個結論找一個反證或質疑來源 | 提升 G2 證據可信度，可能 +30% 搜尋成本 |
-| **多公司比較模式** | 一次比較 2-3 家同產業公司，產出對照表 | 新 JTBD，獨立於現有路徑 |
+| **多公司比較模式** | 一次比較 2-3 家同產業公司，產出對照表（v1.6 Registry 提供資料基礎） | 新 JTBD，獨立於現有路徑 |
 | **訪談腳本生成** | 報告產出後額外產出「該追問什麼」的問題清單 | 補強 Decision Brief |
 | **資料缺失章節獨立** | 把散落的 `[資料缺失]` 標記彙整成 first-class output | 直接呼應原則 3 |
 | **Inline cost dashboard** | 執行中即時顯示已消耗的搜尋/fetch 預算 | 補強原則 7 |
@@ -212,5 +214,6 @@
 | 日期 | 版本 | 變更 |
 |------|------|------|
 | 2026-04-07 | v1.4 對應 | 首版 PRD 建立，回溯 v1.0–v1.4 設計脈絡 |
+| 2026-04-12 | v1.6 對應 | 路線圖更新至 v1.6；候選功能「多公司比較」備註 Registry 基礎 |
 
 > 之後每次大版本更新都應同步更新本 PRD 的「迭代路線圖」「成功指標」段落。

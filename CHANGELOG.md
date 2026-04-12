@@ -4,6 +4,45 @@
 
 > v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
 
+## [v1.6] — 2026-04-12
+
+新增 **Cases Registry**——CRM 式企業分類 DB + 同步腳本。解決 case 累積後缺乏跨案例索引、分類、篩選機制的問題。每次分析完成後跑 `sync`，自動從報告提取 metadata 並維護結構化企業目錄。
+
+### 新增
+
+- **`cases/_registry.json` — 結構化企業 DB**
+  - 參考 HubSpot / Salesforce CRM 分類維度設計
+  - 每家公司記錄：基本資訊、產業分類（雙層：sector + industry）、規模、上市狀態、地理、分析狀態、風險評估、財務快照
+  - Sector 大類（8 個，GICS 簡化）：科技 / 金融 / 娛樂 / 製造 / 零售 / 醫療 / 能源 / 服務
+  - Risk level（4 級）：critical / high / medium / low
+  - 手動 enrichment 不會被 auto-sync 覆蓋（merge 策略：scan 只填空值 + 更新追蹤欄位）
+
+- **`cases/_index.md` — 人類可讀索引**
+  - 從 `_registry.json` 自動生成
+  - 三個視角：總覽表、按產業分類、按規模分類
+  - 含風險 emoji 標記（🔴🟠🟡🟢）和一句話判斷
+
+- **`scripts/sync-registry.py` — 同步腳本**
+  - Python 3 標準庫，零依賴
+  - `sync`：掃描所有 `cases/*/` → 解析報告 metadata（處理 3 種格式）→ 更新 registry → 生成 index
+  - `show`：終端機印出企業摘要表
+  - `show --sector / --size / --risk`：篩選功能
+  - 首次建立時預填充 5 家已分析企業
+
+### 修改
+
+- **`.gitignore`**：新增 `cases/_registry.json` 和 `cases/_index.md`（含機敏摘要，不入 git）
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| DB 格式 | JSON（而非 SQLite / YAML） | 人類可讀、Claude 可直接 Read/Write、標準庫即可處理 |
+| 索引位置 | `cases/` 根層（而非 `product/` 或獨立 `db/`） | 與 case 資料同層、同 gitignore 規則 |
+| Merge 策略 | scan 只填空值 + 追蹤欄位 always update | 手動 enrichment（sector、risk、verdict）不被覆蓋 |
+| 腳本位置 | `scripts/`（新目錄） | 與 agent/、cases/ 平行，職責清楚 |
+| Sector 分類 | 8 個大類 | 足夠區分但不過度細分，可用 industry 欄位補足細項 |
+
 ## [v1.5] — 2026-04-10
 
 三大變更：**統一 `cases/` 目錄**（取代 `input/` + `output/` + `references/cases/` 三散結構）、新增 **`/supplement` 增量更新機制**（分析完成後追加新資料不需重跑全流程）、新增**訪談筆記結構化 Schema**（讓 Agent 根據 confidence 等級自動判斷證據處理方式）。

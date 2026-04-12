@@ -6,6 +6,8 @@ docs/github-portfolio-setup.md
 # Cases：每家公司/產業的完整工作目錄（含真實姓名與機敏資料）
 # cases/README.md 和 cases/_case-template.md 為說明文件，已 tracked
 cases/*/
+cases/_registry.json
+cases/_index.md
 
 # === 以下為向後相容，舊路徑仍 gitignore（遷移期保留）===
 references/cases/case-*.md
