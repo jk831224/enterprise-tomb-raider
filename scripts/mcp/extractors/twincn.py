@@ -66,7 +66,7 @@ def _parse_person_results(text: str, person_name: str) -> list[dict]:
         return []
 
     # Pattern: company name block followed by metadata line
-    # "雲端整合代理商 D\n統一編號：XXXXXXXX , 公司代表人：代表人 Y , ..."
+    # "{公司全名}\n統一編號：{8碼} , 公司代表人：{姓名} , ..."
     blocks = re.split(r"\n(?=\S+(?:有限公司|股份有限公司|商行|企業社|工作室))", text)
 
     for block in blocks:

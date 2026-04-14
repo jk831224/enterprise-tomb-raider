@@ -30,7 +30,7 @@
 
 ### 實測結果
 
-雲端整合代理商 D（XXXXXXXX）驗證：
+雲端整合代理商 D 驗證：
 - `tw_company_lookup`：9.0s，一次取得完整登記+董監事+營業項目（之前需 8 search + 4 fetch）
 - `tw_person_network`：4.6s/人，發現 web_search 完全找不到的 4 家關聯法人
 - twincn.com 人名搜尋被 Cloudflare 封鎖 → 改用 findbiz 官方源，效果更佳

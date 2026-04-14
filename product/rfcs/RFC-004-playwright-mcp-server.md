@@ -17,7 +17,7 @@
 
 新增一個 Playwright-powered MCP server（`scripts/mcp/tw-data-server.py`），暴露三個工具給 Agent：`tw_company_lookup`（台灣公司登記資料）、`tw_person_network`（關聯法人搜尋）、`headless_fetch`（通用 JS 渲染頁面抓取）。這三個工具取代目前 entity verification 階段在 JS 黑名單站點間繞路的低效搜尋模式，將 5-8 次 search + 2-4 次 fetch 壓縮為 1-2 次 MCP call + 1 次驗證 search。`headless_fetch` 同時作為未來遇到新 JS 站點的通用 catch-all。
 
-**為什麼現在做**：6 個案例的 case-log 顯示每案約 25-45% 的搜尋預算浪費在 JS 渲染站（twincn、104、findbiz）的繞路上。最近的雲端整合代理商 D案例（2026-04-14）再次印證：光確認「誰是現任代表人」就用了 4 個來源 8 次搜尋，原因只是官方源 findbiz.nat.gov.tw 是 JS 渲染。
+**為什麼現在做**：6 個案例的 case-log 顯示每案約 25-45% 的搜尋預算浪費在 JS 渲染站（twincn、104、findbiz）的繞路上。最近的雲端整合代理商 D 案例（2026-04-14）再次印證：光確認「誰是現任代表人」就用了 4 個來源 8 次搜尋，原因只是官方源 findbiz.nat.gov.tw 是 JS 渲染。
 
 ## 2. Background / Problem
 
@@ -167,14 +167,14 @@ Option C 看似零成本但核心問題沒解：Agent 還是要自己解析 HTML
 | Entity verification MCP calls | 1-2 | 1 | 符合 | 單一 call 取得完整登記+董監事+營業項目 |
 | Person network MCP calls | — | 2 | — | 每位關鍵人物 1 call |
 | 資料完整度 vs web_search | 大幅提升 | ✅ 大幅提升 | 符合 | 取得持股數、任期、營業項目、前名稱 — 之前全部缺失 |
-| 關聯法人發現 | 預期改善 | ✅ 發現 4 家新法人 | 超出預期 | 代表人 X名下 3 家新法人（雲端整合代理商 D XXXXXXXX、關聯法人 X1、關聯法人 X2）；代表人 Y名下 1 家新法人（關聯法人 Y1） |
+| 關聯法人發現 | 預期改善 | ✅ 發現 4 家新法人 | 超出預期 | 代表人 X 名下 3 家新法人；代表人 Y 名下 1 家新法人 |
 
 **關鍵發現**：
 1. twincn.com 人名搜尋頁面被 Cloudflare 封鎖（Playwright 也拿到空白），改用 findbiz「公司董事或監察人」搜尋模式，效果更好且為官方源
 2. findbiz 的 `tw_person_network` 發現了 web_search 完全找不到的 4 家關聯法人 — 這是 OSINT 能力的實質提升
-3. findbiz 董監事 tab 提供持股數（代表人 Y 850,000 vs 代表人 X 150,000），之前只能從 opengovtw 拿到過時的舊數據
+3. findbiz 董監事 tab 提供持股數（現任代表人 vs 前代表人，持股差異顯著），之前只能從 opengovtw 拿到過時的舊數據
 
-**測試案例**：雲端整合代理商 D（統編 XXXXXXXX），路徑 B，微型
+**測試案例**：雲端整合代理商 D（微型），路徑 B
 **測試日期**：2026-04-14
 **對照 baseline**：[baseline-v1.1-token-usage.md](../perf/baseline-v1.1-token-usage.md)
 
@@ -224,7 +224,7 @@ Option C 看似零成本但核心問題沒解：Agent 還是要自己解析 HTML
 ## 9. Followups / Open Questions
 
 - **F1**：`tw_company_lookup` 是否應在 session 內快取結果？同一統編重複查詢（如 stakeholder 階段查關聯法人後 deep-dive 又查一次）可省 1 次 call
-- **F2**：是否支援批次查詢（一次傳多個統編）？微型系統整合商 E案例有雙法人需求
+- **F2**：是否支援批次查詢（一次傳多個統編）？微型系統整合商 E 案例有雙法人需求
 - **F3**：`headless_fetch` 是否應完全取代 fetch-policy 黑名單概念？（任何 JS 站都可以打了）
 - **F4**：是否新增 `tw_court_search`（司法院裁判書系統）作為第四工具？多個 case-log 記錄搜尋失敗
 - **F5**：L2 沉澱機制：case-log 的「有效搜尋策略」欄位是否需要結構化（新增「建議新增 MCP extractor」標記），以便系統性追蹤
