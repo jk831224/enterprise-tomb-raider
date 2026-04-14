@@ -11,7 +11,8 @@
       "Edit(output/**)",
       "Edit(references/cases/**)",
       "Write(.claude/user-profile.md)",
-      "Edit(.claude/user-profile.md)"
+      "Edit(.claude/user-profile.md)",
+      "Bash(node ~/mission-control/cli.js*)"
     ]
   }
 }
