@@ -11,6 +11,7 @@
 | [RFC-002](RFC-002-hit-rate-two-dimensional.md) | 命中率雙維度改進（Hit Rate + Exploration Ratio）| Draft | v1.5（候選）| 解決單維度命中率對「高聚焦調查」的假陽性警訊 |
 | [RFC-003](../rfc/RFC-003-cases-and-supplement.md) | cases/ 統一目錄 + /supplement 增量更新 | Implemented | v1.5 | 統一三散目錄結構 + 增量更新機制 |
 | [RFC-004](RFC-004-playwright-mcp-server.md) | Playwright MCP Server — 台灣公司資料結構化爬蟲 | Implemented | v1.8 | 用 Playwright 解決 JS 渲染站黑名單，entity verification 搜尋量 -40~60% |
+| [RFC-005](RFC-005-single-context-architecture.md) | 維持單 context 架構、不導入 subagent | Accepted | v1.8 | 記錄架構判斷門檻，避免未來重覆爭論 |
 
 ## 編號慣例
 
