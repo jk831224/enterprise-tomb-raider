@@ -4,6 +4,33 @@
 
 > v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
 
+## [v1.7] — 2026-04-14
+
+新增 **Mission Control 整合**——讓 Agent 在研究過程中自動向跨專案觀測站回報狀態（開票、session 上下線、研究完成），Andrew 可透過 Web UI 即時追蹤所有 agent 專案的進度。
+
+### 新增
+
+- **CLAUDE.md — Mission Control 章節**
+  - Agent 收到研究任務時自動開 kanban ticket
+  - Session start/end 事件回報（Monitor 燈號依據）
+  - 研究完成 / supplement 完成事件回報
+  - Fire-and-forget 模式：只打 CLI，不讀回傳，不依賴 Mission Control 可用性
+
+- **`.claude/settings.json` — Mission Control CLI 權限**
+  - 允許 `node ~/mission-control/cli.js` 免確認執行
+
+### 修改
+
+- **`.gitignore`**：新增 `.obsidian/` 排除（Obsidian 編輯器設定）
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| 回報方式 | CLI fire-and-forget | Agent 不需讀 Mission Control 狀態，單向推送即可 |
+| 指令寫在哪 | CLAUDE.md（而非 skill 內） | 所有 skill 共用，放 CLAUDE.md 一處維護 |
+| 失敗處理 | 靜默忽略（`\|\| true`） | Mission Control 掛掉不應影響研究流程 |
+
 ## [v1.6] — 2026-04-12
 
 新增 **Cases Registry**——CRM 式企業分類 DB + 同步腳本。解決 case 累積後缺乏跨案例索引、分類、篩選機制的問題。每次分析完成後跑 `sync`，自動從報告提取 metadata 並維護結構化企業目錄。
