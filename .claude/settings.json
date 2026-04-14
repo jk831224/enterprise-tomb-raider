@@ -14,5 +14,6 @@
       "Edit(.claude/user-profile.md)",
       "Bash(node ~/mission-control/cli.js*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true
 }
