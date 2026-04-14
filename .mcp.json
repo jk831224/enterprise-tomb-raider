@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tw-data": {
+      "command": "scripts/mcp/.venv/bin/python3",
+      "args": ["scripts/mcp/tw-data-server.py"]
+    }
+  }
+}

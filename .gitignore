@@ -1,5 +1,6 @@
 .DS_Store
 .obsidian/
+scripts/mcp/.venv/
 .claude/settings.local.json
 docs/github-portfolio-setup.md
 .claude/user-profile.md
@@ -15,3 +16,4 @@ references/cases/case-*.md
 output/*.md
 input/*/
 
+__pycache__/
