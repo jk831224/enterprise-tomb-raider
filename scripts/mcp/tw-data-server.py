@@ -99,13 +99,14 @@ async def _tw_company_lookup(tax_id: str) -> dict:
 async def _tw_person_network(person_name: str) -> list[dict]:
     """
     Find all companies associated with a person name.
-    Hits twincn.com person search.
+    Uses findbiz.nat.gov.tw "公司董事或監察人或經理人" search mode (official MOEA).
+    Note: twincn.com person search pages are blocked by anti-bot, so we use findbiz instead.
     """
     from extractors.twincn import extract_person_network
 
     page = await _get_page()
     try:
-        await _rate_limit("twincn.com")
+        await _rate_limit("findbiz.nat.gov.tw")
         return await extract_person_network(page, person_name)
     finally:
         await page.close()
@@ -169,7 +170,7 @@ async def list_tools() -> list[Tool]:
             name="tw_person_network",
             description=(
                 "搜尋某人名下的所有台灣法人。輸入人名，回傳該人擔任董事/監察人/負責人的所有公司清單。"
-                "資料來源：twincn.com。"
+                "資料來源：findbiz.nat.gov.tw（官方 MOEA 商工署）。"
             ),
             inputSchema={
                 "type": "object",

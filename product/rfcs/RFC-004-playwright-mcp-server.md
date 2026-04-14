@@ -2,7 +2,7 @@
 
 | 欄位 | 內容 |
 |------|------|
-| **狀態** | Draft |
+| **狀態** | Implemented |
 | **建立日期** | 2026-04-14 |
 | **最後更新** | 2026-04-14 |
 | **作者** | Andrew + Claude |
@@ -160,14 +160,22 @@ Option C 看似零成本但核心問題沒解：Agent 還是要自己解析 HTML
 
 ### 實測結果
 
-> 實作完成後回填。
-
 | 維度 | 預估 | 實測 | 偏差 | 備註 |
 |------|------|------|------|------|
-| | | | | |
+| tw_company_lookup 延遲 | — | 9.0s | — | findbiz 搜尋→點擊→基本資料→董監事 tab 全流程 |
+| tw_person_network 延遲 | — | 4.6s | — | findbiz 人名搜尋模式 |
+| Entity verification MCP calls | 1-2 | 1 | 符合 | 單一 call 取得完整登記+董監事+營業項目 |
+| Person network MCP calls | — | 2 | — | 每位關鍵人物 1 call |
+| 資料完整度 vs web_search | 大幅提升 | ✅ 大幅提升 | 符合 | 取得持股數、任期、營業項目、前名稱 — 之前全部缺失 |
+| 關聯法人發現 | 預期改善 | ✅ 發現 4 家新法人 | 超出預期 | 代表人 X名下 3 家新法人（雲端整合代理商 D XXXXXXXX、關聯法人 X1、關聯法人 X2）；代表人 Y名下 1 家新法人（關聯法人 Y1） |
 
-**測試案例**：TBD
-**測試日期**：TBD
+**關鍵發現**：
+1. twincn.com 人名搜尋頁面被 Cloudflare 封鎖（Playwright 也拿到空白），改用 findbiz「公司董事或監察人」搜尋模式，效果更好且為官方源
+2. findbiz 的 `tw_person_network` 發現了 web_search 完全找不到的 4 家關聯法人 — 這是 OSINT 能力的實質提升
+3. findbiz 董監事 tab 提供持股數（代表人 Y 850,000 vs 代表人 X 150,000），之前只能從 opengovtw 拿到過時的舊數據
+
+**測試案例**：雲端整合代理商 D（統編 XXXXXXXX），路徑 B，微型
+**測試日期**：2026-04-14
 **對照 baseline**：[baseline-v1.1-token-usage.md](../perf/baseline-v1.1-token-usage.md)
 
 ## 7. 風險
@@ -180,6 +188,7 @@ Option C 看似零成本但核心問題沒解：Agent 還是要自己解析 HTML
 | 台灣政府站點 rate limit / IP block | 中 | 同域名 5 秒間隔；exponential backoff；5 分鐘結果快取 |
 | 使用者環境無法安裝 Playwright（企業 proxy 等） | 低 | MCP server 是 optional，所有現有流程保持運作 |
 | Headless 偵測（反爬） | 低 | 政府站點通常不反爬；必要時加 stealth 設定 |
+| twincn.com 人名搜尋被封鎖 | **已發生** | Playwright 也取得空白頁。改用 findbiz「公司董事或監察人」搜尋模式，效果更佳且為官方源。twincn 仍可用於公司詳細頁面（item.aspx?no=）作為補充 |
 
 ## 8. Implementation Plan
 

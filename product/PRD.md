@@ -192,11 +192,8 @@
 
 > v1.0–v1.3 沒有對應 RFC（在 RFC 制度建立前）。歷史決策見 `CHANGELOG.md` 的「設計決策」表格。
 
-### 進行中
-
-| 版本 | 主題 | 對應 RFC | 狀態 |
-|------|------|---------|------|
-| **v1.8** | **Playwright MCP Server — 台灣公司資料結構化爬蟲** | [RFC-004](rfcs/RFC-004-playwright-mcp-server.md) | RFC Draft |
+| **v1.7** | **Mission Control 整合 — 跨專案觀測站** | — |
+| **v1.8** | **Playwright MCP Server — 台灣公司資料結構化爬蟲** | [RFC-004](rfcs/RFC-004-playwright-mcp-server.md) |
 
 ### 候選下一步（無排序，待 RFC 評估）
 

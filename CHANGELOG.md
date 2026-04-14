@@ -4,6 +4,46 @@
 
 > v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
 
+## [v1.8] — 2026-04-14
+
+新增 **Playwright MCP Server**——用 headless browser 解決 JS 渲染站黑名單問題。三個工具讓 entity verification 從 8 次 search + 4 次 fetch 降到 1-3 次 MCP call。（[RFC-004](product/rfcs/RFC-004-playwright-mcp-server.md)）
+
+### 新增
+
+- **`scripts/mcp/tw-data-server.py` — Playwright MCP Server**
+  - `tw_company_lookup(tax_id)`：打 findbiz.nat.gov.tw（官方商工署），回傳完整公司登記 JSON（含董監事持股、任期、39 項營業項目、前名稱）
+  - `tw_person_network(person_name)`：打 findbiz「公司董事或監察人」搜尋，回傳某人名下所有法人（實測發現 4 家 web_search 找不到的關聯法人）
+  - `headless_fetch(url)`：通用 JS 渲染 catch-all，替代 fetch-policy 黑名單站點
+  - Lazy browser init、同域名 5 秒速率限制、graceful degradation
+
+- **`scripts/mcp/extractors/`**：findbiz.py + twincn.py + job104.py，結構化 HTML 解析器
+
+- **`.mcp.json`**：MCP server 設定，Claude Code 啟動時自動載入
+
+### 修改
+
+- **`agent/AGENT-CORE.md`**：數據源優先序加 MCP；搜尋預算表加「有 MCP」欄
+- **`agent/prompts/entity-verification.md`**：新增 MCP 優先流程（可用→1 call，不可用→回退 5 步）
+- **`references/methodology/fetch-policy.md`**：黑名單加 MCP 替代欄位
+- **`product/architecture.md`**：架構圖加 MCP 層
+- **`product/PRD.md`**：路線圖更新至 v1.8
+
+### 實測結果
+
+雲端整合代理商 D（XXXXXXXX）驗證：
+- `tw_company_lookup`：9.0s，一次取得完整登記+董監事+營業項目（之前需 8 search + 4 fetch）
+- `tw_person_network`：4.6s/人，發現 web_search 完全找不到的 4 家關聯法人
+- twincn.com 人名搜尋被 Cloudflare 封鎖 → 改用 findbiz 官方源，效果更佳
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| 語言 | Python（非 Node.js） | 專案已有 Python 腳本，不引入第二 runtime |
+| 人名搜尋來源 | findbiz（非 twincn） | twincn 被 Cloudflare 封鎖，findbiz 為官方源且更完整 |
+| MCP 資料計入 | fetch 預算 | 不膨脹既有預算框架 |
+| 擴展策略 | L1 headless_fetch catch-all → L2 case-log 沉澱 → L3 批次補 extractor | 平衡覆蓋率與維護成本 |
+
 ## [v1.7] — 2026-04-14
 
 新增 **Mission Control 整合**——讓 Agent 在研究過程中自動向跨專案觀測站回報狀態（開票、session 上下線、研究完成），Andrew 可透過 Web UI 即時追蹤所有 agent 專案的進度。
