@@ -4,14 +4,16 @@
 
 以下網站因 JavaScript 渲染或登入牆，web_fetch 必定失敗。遇到這些網站時，**直接依賴 web_search snippet 取得資訊，不執行 web_fetch**。
 
-| 網站 | 類型 | 原因 |
-|------|------|------|
-| twincn.com | 台灣公司登記 | JS 渲染，fetch 回傳空白 |
-| twfile.com | 台灣公司情報 | JS 渲染，fetch 回傳空白 |
-| 104.com.tw | 求職平台 | JS 渲染（Vite SPA），fetch 只取得載入腳本 |
-| findcompany.com.tw | 公司登記查詢 | 403 Forbidden |
-| linkedin.com | 職業社群 | 登入牆，fetch 無法取得內容 |
-| alphaloan.co | 公司資訊 | 410 Gone |
+| 網站 | 類型 | 原因 | MCP 替代（v1.8） |
+|------|------|------|-----------------|
+| twincn.com | 台灣公司登記 | JS 渲染，fetch 回傳空白 | `tw_company_lookup` / `tw_person_network` |
+| twfile.com | 台灣公司情報 | JS 渲染，fetch 回傳空白 | `tw_company_lookup`（資料重複） |
+| 104.com.tw | 求職平台 | JS 渲染（Vite SPA），fetch 只取得載入腳本 | `headless_fetch` |
+| findcompany.com.tw | 公司登記查詢 | 403 Forbidden | `tw_company_lookup`（findbiz 官方源更佳） |
+| linkedin.com | 職業社群 | 登入牆，fetch 無法取得內容 | 無（登入牆非 JS 問題，MCP 也無法突破） |
+| alphaloan.co | 公司資訊 | 410 Gone | 無（站點已關閉） |
+
+> **MCP 工具可用時**：標有 MCP 替代的站點，優先使用對應 MCP 工具而非 search snippet。MCP 不可用時仍依照上述黑名單規則處理。
 
 ## 台灣公司登記：推薦來源與比對規則
 

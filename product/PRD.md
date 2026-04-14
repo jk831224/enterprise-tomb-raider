@@ -188,8 +188,15 @@
 | v1.4 | Drop Zone + PM 工件層 | [RFC-001](rfcs/RFC-001-drop-zone.md) |
 | v1.5 | cases/ 統一目錄 + /supplement 增量更新 | [RFC-003](rfc/RFC-003-cases-and-supplement.md) |
 | **v1.6** | **Cases Registry — CRM 式企業分類 DB** | — |
+| **v1.7** | **Mission Control 整合 — 跨專案觀測站** | — |
 
 > v1.0–v1.3 沒有對應 RFC（在 RFC 制度建立前）。歷史決策見 `CHANGELOG.md` 的「設計決策」表格。
+
+### 進行中
+
+| 版本 | 主題 | 對應 RFC | 狀態 |
+|------|------|---------|------|
+| **v1.8** | **Playwright MCP Server — 台灣公司資料結構化爬蟲** | [RFC-004](rfcs/RFC-004-playwright-mcp-server.md) | RFC Draft |
 
 ### 候選下一步（無排序，待 RFC 評估）
 
@@ -215,5 +222,6 @@
 |------|------|------|
 | 2026-04-07 | v1.4 對應 | 首版 PRD 建立，回溯 v1.0–v1.4 設計脈絡 |
 | 2026-04-12 | v1.6 對應 | 路線圖更新至 v1.6；候選功能「多公司比較」備註 Registry 基礎 |
+| 2026-04-14 | v1.7-v1.8 對應 | 路線圖更新至 v1.7；新增「進行中」區塊放 v1.8 Playwright MCP Server |
 
 > 之後每次大版本更新都應同步更新本 PRD 的「迭代路線圖」「成功指標」段落。

@@ -16,6 +16,22 @@
 | 董監事變更歷史 | `"[公司名]" 董監事變更` `"[統編]" 董監事歷史` |
 | 員工數三角定位 | `[公司] site:cake.me OR site:yourator.co OR site:104.com.tw` `"[公司]" site:linkedin.com employees` `[公司] 員工數 OR 人數 OR 團隊規模` |
 
+## 台灣公司登記資料：MCP 工具優先流程（v1.8）
+
+> 如果 MCP 工具 `tw_company_lookup` 可用，優先使用。MCP 直接存取 findbiz.nat.gov.tw（商工署官方）+ twincn.com（JS 渲染），回傳結構化 JSON。
+
+### MCP 可用時
+
+1. 呼叫 `tw_company_lookup(統編 or 公司名)`，取得官方登記資料（公司名、代表人、董監事、資本額、地址、設立日、最後核准變更日）
+2. 用 **1 次 web_search** 比對 `biz.news.org.tw` 或其他來源（交叉驗證規則仍適用：MCP 資料算 1 個來源，需至少 1 個 web 來源佐證）
+3. 若一致 → 採用 MCP 資料（來自官方源，優先級最高）
+4. 若不一致 → 以 MCP 資料為準（官方源），標註差異
+5. 報告中標註「資料截至 [最後核准變更日期]」
+
+### MCP 不可用時（回退流程）
+
+使用下方的多來源交叉比對流程。
+
 ## 台灣公司登記資料：多來源交叉比對（強制）
 
 > ⚠️ 公司登記資料（董監事、資本額、地址）**禁止單一來源直接寫入報告**。
@@ -27,7 +43,7 @@
 | 優先序 | 來源 | 取得方式 | 備註 |
 |--------|------|---------|------|
 | 1 | `biz.news.org.tw/company_[統編]` | web_fetch（可能需 follow redirect） | 更新較即時，有最後核准變更日期 |
-| 2 | `twincn.com/item.aspx?no=[統編]` | web_search snippet（JS 渲染，不可 fetch） | 董監事名單常比其他來源更新 |
+| 2 | `twincn.com/item.aspx?no=[統編]` | web_search snippet（JS 渲染，不可 fetch）| 董監事名單常比其他來源更新。**MCP 可用時可改用 `tw_company_lookup` 直接取得完整頁面** |
 | 3 | `opengovtw.com/ban/[統編]` | web_fetch | ⚠️ 資料可能過時，不可作為唯一來源 |
 
 ### 比對流程
