@@ -1,8 +1,8 @@
 # Enterprise Tomb Raider — Product Requirements Document
 
 > **狀態**：Living document
-> **版本**：v1.6 對應
-> **最後更新**：2026-04-12
+> **版本**：v1.9 對應
+> **最後更新**：2026-04-18
 > **作者**：Andrew Yen
 > **讀者**：產品迭代決策者（自己）+ 作品集評估者（雇主、面試官）
 
@@ -115,6 +115,14 @@
 
 > 出處：v1.3 引入。`.claude/skills/recon/SKILL.md` Step 4.0.5
 
+### 8. 階段紀律 — SOP 第一（v1.9 新增）
+
+skill 規定要載入的階段 prompt（`agent/prompts/{stage}.md`）**必須真的 Read**，不可憑記憶代替；每階段必須寫出對應的獨立產物檔，不可合併。違反規則會被 `.claude/hooks/enforce-stage-prompt-load.sh` 攔截。
+
+這條原則是針對 2026-04-18 一次退化事件的制度化回應：在模型熟悉任務時，token 效率偏誤會誘發「我記得怎麼寫」的自主豁免，實測會造成 ~40% 的報告篇幅萎縮與關鍵章節遺漏。物理防線是唯一能在壓力下仍然生效的約束。
+
+> 出處：v1.9 引入，[RFC-006](rfcs/RFC-006-stage-discipline-hook.md)。`.claude/skills/recon/SKILL.md` Step 4「Mandatory Stage Discipline」段 + `.claude/hooks/enforce-stage-prompt-load.sh`。
+
 ## 目標 vs 非目標
 
 ### Goals
@@ -127,6 +135,7 @@
 | **G4. 規模自適應產出深度合理** | 大型公司報告深度 ≥ 中型 ≥ 微型，但微型不被「框架硬套」浪費 token |
 | **G5. 對使用者透明** | 預分析評估在 1 輪內呈現完整成本結構 |
 | **G6. 迭代過程本身可審視** | 所有設計變更都有 RFC，所有效能影響都有量測或估算 |
+| **G7. 階段紀律可被外部強制**（v1.9） | recon 六階段的產物檔均有 hook 把關，違規行為在 Write 層被攔截而非只在 review 被發現 |
 
 ### Non-goals
 
@@ -194,6 +203,7 @@
 
 | **v1.7** | **Mission Control 整合 — 跨專案觀測站** | — |
 | **v1.8** | **Playwright MCP Server — 台灣公司資料結構化爬蟲** | [RFC-004](rfcs/RFC-004-playwright-mcp-server.md) |
+| **v1.9** | **Stage Discipline Hook — 強制載入階段 prompt** | [RFC-006](rfcs/RFC-006-stage-discipline-hook.md) |
 
 ### 候選下一步（無排序，待 RFC 評估）
 

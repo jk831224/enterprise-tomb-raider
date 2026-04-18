@@ -162,6 +162,36 @@ Scoping 完成 = 能填完以下參數包：
 
 **每個階段的 prompt 只在進入該階段時載入，不要一次全部載入。**
 
+### Step 4 強制執行檢查（Mandatory Stage Discipline）
+
+**這是剛性規則，不是建議。違反會被 PreToolUse hook 擋下 Write/Edit。**
+
+每進入一個階段，依序執行以下三步驟，**不可跳過任何一步**：
+
+1. **Read 對應 prompt 檔**（不是憑記憶——即使你做過一百次，這次也要 Read）：
+   - entity 階段 → `agent/prompts/entity-verification.md`
+   - stakeholder 階段 → `agent/prompts/stakeholder-investigation.md`
+   - industry 階段 → `agent/prompts/industry-analysis.md`
+   - company deep-dive 階段 → `agent/prompts/company-deep-dive.md`
+   - 年報階段 → `agent/prompts/annual-report-analysis.md`
+   - 決策簡報階段 → `agent/prompts/decision-brief.md`
+   - 增量更新階段 → `agent/prompts/supplement-analysis.md`
+
+2. **執行該階段的搜尋與合成**。
+
+3. **寫出該階段的獨立產物檔**到 `cases/{target}/`：
+   - entity → `{YYYY-MM-DD}_{target}_entity-verification.md`
+   - stakeholder → `{YYYY-MM-DD}_{target}_stakeholder-investigation.md`
+   - industry（路徑 A 主報告 / 路徑 B 產業章節）→ `{YYYY-MM-DD}_{target}_industry-report.md`
+   - company deep-dive → `{YYYY-MM-DD}_{target}_company-report.md`
+   - decision brief → `{YYYY-MM-DD}_{target}_decision-brief.md`
+
+   **不可將多個階段合併成一個檔案**。例如不可把 stakeholder-investigation 併入 company-report 的某個章節就跳過獨立產物。
+
+**違規自我檢測**：如果你發現自己在想「這個階段我記得大概怎麼做，我直接寫報告吧」——停。這就是上次造成退化的思路。Read 該 prompt 檔，即使你覺得是多餘動作。prompt 檔內載有每階段的必填欄位、交叉驗證表格模板、證據等級規則，跳過 = 產出規格不一致。
+
+**hook 保護**：`.claude/hooks/enforce-stage-prompt-load.sh` 會在 Write/Edit `cases/**/*_{stage}.md` 前檢查 transcript 是否有 Read 對應 prompt。沒 Read = Write 被擋。這是物理防線，別試圖繞過。
+
 ### Step 4.0.5: 預分析評估（Pre-Analysis Assessment）
 
 **觸發時機**：entity-verification 完成、使用者確認基本輪廓之後、stakeholder-investigation 之前。

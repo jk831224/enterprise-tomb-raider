@@ -4,6 +4,46 @@
 
 > v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
 
+## [v1.9] — 2026-04-18
+
+新增 **Stage Discipline Hook**——在模型壓力下會自主省略「載入階段 prompt」步驟，造成報告品質退化。本版以 `PreToolUse` hook 物理攔截未載入對應 prompt 的 Write/Edit 行為。（[RFC-006](product/rfcs/RFC-006-stage-discipline-hook.md)）
+
+### 新增
+
+- **`.claude/hooks/enforce-stage-prompt-load.sh`**：bash + python 混合腳本
+  - 讀 stdin JSON，取 tool_name / file_path / transcript_path
+  - 若目標在 `cases/**/*_{stage}.md`，依檔名後綴查表決定應 Read 的 prompt
+  - 掃 session transcript，沒有 Read 紀錄 → exit 2 並回傳「Required: Read X」訊息
+  - 六個受管階段：entity-verification / stakeholder-investigation / industry-report / company-report / decision-brief / supplement
+
+- **`.claude/settings.json` `hooks.PreToolUse`**：註冊 matcher `Write|Edit` 呼叫上述腳本
+
+### 修改
+
+- **`.claude/skills/recon/SKILL.md`**：Step 4 後新增「Mandatory Stage Discipline」段，明列七個 stage→prompt 對應與六個必寫產物檔；包含違規自我檢測語句
+- **`product/PRD.md`**：新增原則 8（階段紀律）、G7（階段紀律可被外部強制）、路線圖 v1.9 列項
+- **`product/architecture.md`**：架構圖新增 `.claude/hooks/` 防線層；補「Stage Discipline Hook」關鍵機制段
+
+### 觸發事件（設計動機）
+
+某微型公司 `/company` 分析產出報告：176 行 vs 同等規模歷史案例 ~292 行；缺 Metadata、交叉驗證表、組織結構視覺化；`stakeholder-investigation` 獨立產物檔未寫。根因：四個階段 prompt 一個都沒 Read，憑記憶寫完全程。
+
+使用者察覺退化並質疑「是否該降模型到 4.6」。結論：問題在 harness 缺物理約束，不在模型智能；降模型只會惡化。改以 hook 制度化。
+
+### 設計決策
+
+| 決策 | 選擇 | 原因 |
+|------|------|------|
+| 檢查層級 | PreToolUse hook | Skill 文字警告已證明在壓力下會被自主豁免 |
+| 驗證方式 | 掃 session transcript 找 Read 紀錄 | 不需要額外 state 檔，session 結束自然清理 |
+| 違規處理 | exit 2 + 明確指示要 Read 哪個檔 | 擋下同時提供修補路徑，不是純 block |
+| 豁免路徑 | `.claude/settings.local.json` 局部關閉 | 刻意不提供 env var 豁免，避免模型學會繞過 |
+
+### 跳過/拒絕做
+
+- 未加「檢查產物檔內容是否對齊 prompt 規格」的靜態分析（範圍超出本次），列為 RFC-007 候選
+- 未把 hook 抽成通用 skill compliance 樣板（等多專案需求出現再做）
+
 ## [v1.8] — 2026-04-14
 
 新增 **Playwright MCP Server**——用 headless browser 解決 JS 渲染站黑名單問題。三個工具讓 entity verification 從 8 次 search + 4 次 fetch 降到 1-3 次 MCP call。（[RFC-004](product/rfcs/RFC-004-playwright-mcp-server.md)）

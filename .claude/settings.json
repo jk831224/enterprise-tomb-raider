@@ -15,5 +15,18 @@
       "Bash(node ~/mission-control/cli.js*)"
     ]
   },
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-stage-prompt-load.sh\""
+          }
+        ]
+      }
+    ]
+  }
 }
