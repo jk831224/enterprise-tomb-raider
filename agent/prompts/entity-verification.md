@@ -42,7 +42,8 @@
 
 | 優先序 | 來源 | 取得方式 | 備註 |
 |--------|------|---------|------|
-| 1 | `biz.news.org.tw/company_[統編]` | web_fetch（可能需 follow redirect） | 更新較即時，有最後核准變更日期 |
+| 1 | `info.technews.tw/company/[統編]` | web_fetch | 實測資料較新且 fetch 成功率高（單案例實證） |
+| 1 | `biz.news.org.tw/company_[統編]` | web_fetch（可能需 follow redirect） | 有最後核准變更日期；⚠️ 部分欄位 JS 載入，fetch 可能不完整，失敗即換源 |
 | 2 | `twincn.com/item.aspx?no=[統編]` | web_search snippet（JS 渲染，不可 fetch）| 董監事名單常比其他來源更新。**MCP 可用時可改用 `tw_company_lookup` 直接取得完整頁面** |
 | 3 | `opengovtw.com/ban/[統編]` | web_fetch | ⚠️ 資料可能過時，不可作為唯一來源 |
 
@@ -57,6 +58,8 @@
 ## 員工數三角定位規則
 
 至少從兩個獨立來源取得員工數。信任度排序：求職平台 > LinkedIn > 新聞報導 > TIEA/公會。若來源差異 >30%，標記 [待驗證] 並記錄各來源數字。
+
+**微型企業例外**：微型企業的員工數是 OSINT 盲區（求職平台多不揭露、LinkedIn 登入牆）。1 次搜尋無果 → 直接標 `[資料缺失]`，改用間接推估（資本額 + 產品線數 + 徵才狀態），不重複搜尋（見 `fetch-policy.md` 降級規則）。
 
 ## 交叉比對規則
 

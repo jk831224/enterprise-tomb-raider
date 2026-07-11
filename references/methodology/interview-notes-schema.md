@@ -1,7 +1,7 @@
 # 訪談筆記結構化 Schema
 
 > 供使用者在 `cases/{target}/input/` 丟入訪談筆記時使用的建議格式。
-> 也可配合 `/meeting` skill 把逐字稿結構化後再丟入。
+> 逐字稿可先用任何會議筆記結構化工具整理成此格式再丟入。
 
 ## YAML Frontmatter
 

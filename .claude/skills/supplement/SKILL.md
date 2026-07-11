@@ -5,21 +5,30 @@ description: >
   「補充分析」「我有新資料」「更新報告」時觸發。
   讀取既有報告 + 新 drop zone 檔案 → 產出 Supplement Memo + 更新版本鏈。
 argument-hint: "[公司或產業名稱]"
-allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - WebSearch
+  - WebFetch
+  - Write
+  - Edit
+  - Agent
+  - "Bash(node ~/mission-control/cli.js*)"
 ---
 
 # Supplement — 增量更新
 
 ## 前提
 
-使用者已完成 `/company` 或 `/industry` 分析，並在 `cases/{target}/input/` 新增了檔案。
+使用者已完成 `/company` 分析，並在 `cases/{target}/input/` 新增了檔案。
 
 ## 執行流程
 
 ### Step 1: 定位既有報告
 
 1. 分析目標：`$ARGUMENTS`（如果為空，問使用者要更新哪個目標）
-2. Glob `cases/{target}/company-report.md` 或 `cases/{target}/industry-report.md`
+2. Glob `cases/{target}/*_company-report.md` 或 `cases/{target}/*_industry-report.md`（檔名為日期制 `{YYYY-MM-DD}_{target}_{type}.md`；命中多檔時取日期最新者為主報告）
 3. 如果找不到 → 告訴使用者「找不到 `{target}` 的既有報告。請先執行 `/company {target}` 完成首次分析。」，結束
 
 ### Step 2: 讀取既有報告
@@ -54,13 +63,14 @@ allowed-tools: Read Glob Grep WebSearch WebFetch Write Edit Agent
 
 ### Step 6: 產出
 
-1. Supplement Memo → `cases/{target}/supplements/{YYYY-MM-DD}_supplement-{nn}.md`
+1. Supplement Memo → `cases/{target}/supplements/{YYYY-MM-DD}_{target}_supplement-{nn}.md`
    - `{nn}` 為序號，從 `supplements/` 目錄中現有檔案推算
 2. Edit 主報告 Version History，追加新行：
    ```
    | v{X.Y} | YYYY-MM-DD | `/supplement` [觸發資料摘要] | [變更摘要] |
    ```
-3. 如果 User Profile 存在 → 重新產出 Decision Brief（零搜尋預算），存入 `cases/{target}/decision-brief.md`（覆寫）
+3. 如果 User Profile 存在 → 重新產出 Decision Brief：先 Read `agent/prompts/decision-brief.md`（stage discipline，hook 會驗證），零搜尋預算，寫入新檔 `cases/{target}/{YYYY-MM-DD}_{target}_decision-brief.md`（日期制新檔，不覆寫舊版——保留決策簡報的版本軌跡）
+4. 向 Mission Control 回報（`supplement-complete` event，指令見專案 CLAUDE.md）
 
 ### Step 7: 呈現
 

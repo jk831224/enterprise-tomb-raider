@@ -4,17 +4,19 @@
 
 ## 使用方式
 
-- `/recon [目標]`：統一入口，自動判斷路徑並執行完整研究流程
-- `/industry [產業名稱]`：直接進入產業分析
-- `/company [公司名稱]`：直接進入公司分析
+- `/company [公司名稱]`：**唯一研究入口**（v2.1 起），完整公司深度研究流程（含 v2.0 對抗式深挖輪）
 - `/supplement [目標]`：增量更新既有報告（讀取 `cases/{目標}/input/` 新增檔案 → 產出 Supplement Memo + 更新版本鏈）
+
+> 原 `/recon`、`/industry` 已於 v2.1 整併移除（RFC-008）：15 個實戰案例全為公司研究，路徑判斷從未發揮價值。產業脈絡以錨點章節涵蓋在公司報告內。
 
 首次使用會觸發 User Profile 設定（可跳過）。設定後每次分析完成會額外產出 Decision Brief（決策簡報），根據使用者角色解讀報告重點。
 
 ## 專案結構
 
 - `agent/AGENT-CORE.md`：執行核心（角色、迴圈、預算、降級、錯誤處理）
-- `agent/AGENT-ROUTES.md`：路徑與階段清單
+- `agent/AGENT-ROUTES.md`：階段順序摘要
+- `agent/AGENT-LOOP.md`：對抗式深挖輪編排（v2.0：explorer 群 + critic 證偽）
+- `agent/subagents/`、`agent/schemas/`：深挖輪 subagent playbook 與 typed output 格式
 - `agent/prompts/`：各階段 prompt，由 skill 按階段動態載入
 - `references/`：共用知識層（方法論、報告模板）
 - `cases/`：分析案例統一目錄 — 每家公司/產業一個資料夾，含 `input/`（drop zone）、報告、增量更新、案例紀錄（v1.5，gitignored）
@@ -34,7 +36,7 @@ Andrew 交代你研究一家公司或產業，**第一步就是開一張 ticket*
 ```bash
 # 1. 收到研究任務 → 立刻開票
 node ~/mission-control/cli.js kanban add --project tomb-raider --title "研究 <目標>" --status doing
-node ~/mission-control/cli.js event --project tomb-raider --type research-start --data '{"target":"<公司/產業名>","route":"<A或B>"}'
+node ~/mission-control/cli.js event --project tomb-raider --type research-start --data '{"target":"<公司名>","route":"B"}'
 
 # 2. 研究完成 → 移卡 + 回報
 node ~/mission-control/cli.js kanban move --id <card-id> --status done
@@ -58,4 +60,4 @@ node ~/mission-control/cli.js event --project tomb-raider --type session-end
 node ~/mission-control/cli.js event --project tomb-raider --type supplement-complete --data '{"target":"<名稱>","new_version":"<version>"}'
 ```
 
-回報時機：`/recon` 或 `/company` 啟動時、報告寫入完成後、`/supplement` 完成後。
+回報時機：`/company` 啟動時、報告寫入完成後、`/supplement` 完成後。

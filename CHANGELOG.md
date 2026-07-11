@@ -4,6 +4,65 @@
 
 > v1.4 起，每次有意義的設計變更都有對應的 RFC，位於 `product/rfcs/`。CHANGELOG 保留 user-facing release notes 的視角，engineering 視角的決策過程請見 RFC。
 
+## [v2.1] — 2026-06-11
+
+**單一入口整併**（[RFC-008](product/rfcs/RFC-008-single-entry-consolidation.md)）：四入口 → 雙入口（`/company` + `/supplement`）。依據實際使用數據（15 案全為公司研究、路徑 A 零使用、/supplement 有 2 案實戰），移除 `/recon` 與 `/industry`，recon 主控邏輯全文併入 `company/SKILL.md` 使其自包含。
+
+### 移除
+
+- `.claude/skills/recon/`、`.claude/skills/industry/`、`references/methodology/path-selection.md`（快照於 `agent/_archive/v2.0-phase1-pre-consolidation/`）
+
+### 修改
+
+- `company/SKILL.md` 重寫為自包含主控器，沿用原 recon Step 0–6 編號（外部引用座標不變）；原 Step 2 路徑判斷改為「目標確認」
+- `industry-analysis.md` prompt 與 industry-report 模板**保留**（錨點產業章節仍在公司流程內產出）
+- 交叉引用清掃 11 檔：hook 訊息、drop-zone、model-selection、deep-dive-sources、AGENT-ROUTES（移除路徑 A 表）、AGENT-LOOP、company-report 模板、supplement SKILL、CLAUDE.md、README、cases/README
+
+## [v2.0-phase1] — 2026-06-11
+
+**對抗式深挖循環 Phase 1**（[RFC-007](product/rfcs/RFC-007-adversarial-deep-dive-loop.md) Option B）：company-deep-dive 完成後新增深挖輪——4 類來源 explorer 平行探勘 + critic 對抗證偽，typed structured output 保證據鏈。路徑 B 限定，固定 1 輪。
+
+### 新增
+
+- **`agent/AGENT-LOOP.md`**：深挖輪編排規格——預算分配演算法（總上限 微型 40 / 中型 60 / 大型 90 search，剩餘 <8 即跳過防空轉）、explorer/critic spawn 模板、證據升降規則、對抗驗證摘要格式
+- **`agent/subagents/`**：`explorer-gov`（裁罰/判決/標案/商標）、`explorer-social`（公開言論時間軸）、`explorer-sentiment`（匿名風評，強制信度上限）、`explorer-network`（關聯網絡二層展開）、`critic`（三角度證偽，杜撰反證為最嚴重違規）
+- **`agent/schemas/`**：`finding.md` / `critic-verdict.md` — subagent typed output 格式與驗證規則
+- **`references/methodology/deep-dive-sources.md`**：四類來源搜尋樣式矩陣 + 合規紅線
+- **`references/methodology/model-selection.md`**：模型建議原則化（旗艦層/性價比層），不再寫死型號
+
+### 修改
+
+- `recon/SKILL.md`：新增 Step 4.7 深挖輪；預分析評估呈現深挖輪預算
+- `AGENT-ROUTES.md` / `AGENT-CORE.md`：深挖輪納入路徑表與預算說明
+- 退版快照：v1.9 執行檔已存 `agent/_archive/v1.9/`
+
+## [v1.9.1] — 2026-06-11
+
+技能審計修復版：/company 全鏈審計（28 檔）發現的 2 個 P0、7 個 P1 一致性缺陷全數修復。
+
+### 修復
+
+- **P0 檔名規格統一（增量更新鏈斷裂）**：recon Step 6 與 `/supplement` 的裸名檔（`company-report.md`）規格與 Step 4 日期制衝突，導致 `/supplement` 找不到實際報告。統一為日期制 `{YYYY-MM-DD}_{名稱}_{type}.md`，supplement 改模糊匹配取最新；`cases/README.md`、supplement-memo 模板同步
+- **P0 模型建議矛盾**：Step 4.0.5 原指示讀 `product/perf/`（AGENT-CORE 明令禁載），且決策樹寫死已過時型號。改引 `references/methodology/model-selection.md` 原則化決策
+- supplement 檔名三方不一致：hook 原 pattern `*_supplement.md` 對實際檔名永不觸發（防線缺口）。統一 `{date}_{target}_supplement-{nn}.md`，hook pattern 擴為 `*_supplement-*.md`；supplement 重產 Decision Brief 前強制 Read 對應 prompt（原裸名寫入繞過 hook）
+- `drop-zone.md` 殘留 v1.4 舊路徑 `input/{target-slug}/`，統一為 `cases/{target}/input/`
+- **案例教訓回寫**（知識迴圈修復）：TechNews 來源升級＋biz.news 不穩標註（上市遊戲營運商 C 案）、資安廠商官網 fetch 必敗原則（雲端資安代理商 B 案）、微型員工數 1 次降級規則（個人理財 SaaS A 案）→ `fetch-policy.md` / `entity-verification.md`
+- 年報取得鏈：headless_fetch MCP 納入優先序、使用者下載 PDF 入 drop zone 升為一級引導
+- 「四重鏡頭」殘留術語 → User Profile 角色鏡頭（supplement-analysis、supplement-memo）
+- `$ARGUMENTS` 捷徑語義修正（不再字面跳過 Step 0/1）
+- fetch-policy 失效案例引用、`/meeting` 不存在技能引用、case-template 雙份漂移（references 側改指標檔）
+
+### 新增
+
+- recon Step 6「教訓回寫檢查」＋ case-template「方法論回寫」段——案例沉澱時立即回寫方法論，根治迴圈斷裂
+- Mission Control 開票/回報納入 skill 流程（recon / company / supplement）
+- `/company` description 強化觸發語境；四個 skill 的 `allowed-tools` 改 YAML list 並補 Mission Control Bash 與 tw-data MCP 預核可
+- `.claude/skills/company/evals/trigger-evals.json`：20 題觸發測試集
+
+### 審計勘誤
+
+- `allowed-tools` 空格分隔格式經官方文件查證為**合法**，且語義為預核可（不阻擋未列工具）——原審計 B1 疑慮不成立，改列 UX 改善
+
 ## [v1.9] — 2026-04-18
 
 新增 **Stage Discipline Hook**——在模型壓力下會自主省略「載入階段 prompt」步驟，造成報告品質退化。本版以 `PreToolUse` hook 物理攔截未載入對應 prompt 的 Write/Edit 行為。（[RFC-006](product/rfcs/RFC-006-stage-discipline-hook.md)）

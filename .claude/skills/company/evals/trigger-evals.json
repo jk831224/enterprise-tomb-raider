@@ -1,0 +1,22 @@
+[
+  {"query": "/company 天觀智能股份有限公司", "should_trigger": true},
+  {"query": "幫我盡調一家叫藍鯨物流的公司，我下週要去面試他們的 PM 職位", "should_trigger": true},
+  {"query": "查一下宏宇精密的底細，客戶說要跟他們簽三年獨家代理，我想先確認對方履約能力", "should_trigger": true},
+  {"query": "這家公司能投嗎？叫禾光生技，種子輪，創辦人說自己是前外商高管", "should_trigger": true},
+  {"query": "幫我深入研究小樹保經這家公司的經營團隊跟財務狀況", "should_trigger": true},
+  {"query": "我拿到 offer 了，公司叫雲杉數據，幫我看看這家公司穩不穩、團隊有沒有什麼紅旗", "should_trigger": true},
+  {"query": "競爭對手快取科技最近一直挖我們的人，幫我調查他們的背景和資金狀況", "should_trigger": true},
+  {"query": "/company 鼎興貿易", "should_trigger": true},
+  {"query": "幫我研究台灣寵物食品產業有哪些主要玩家", "should_trigger": false},
+  {"query": "我想了解 AI 客服這個賽道最近的趨勢和市場規模", "should_trigger": false},
+  {"query": "幫我分析這份財報 PDF 講了什麼重點", "should_trigger": false},
+  {"query": "幫我研究一下", "should_trigger": false},
+  {"query": "我有新的訪談筆記，幫我更新上次那份雲杉數據的報告", "should_trigger": false},
+  {"query": "幫我做一份我們公司的介紹簡報給客戶看", "should_trigger": false},
+  {"query": "比較一下統一和味全哪支股票比較值得買", "should_trigger": false},
+  {"query": "公司登記資料要去哪裡查？統編可以查到什麼？", "should_trigger": false},
+  {"query": "幫我把這家公司的分析報告翻成英文", "should_trigger": false},
+  {"query": "上次那份盡調報告的決策簡報，用投資人視角再產一次", "should_trigger": false},
+  {"query": "幫我看看這家公司官網的 UX 有什麼問題", "should_trigger": false},
+  {"query": "我們公司內部的離職率數據要怎麼分析比較好", "should_trigger": false}
+]

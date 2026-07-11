@@ -1,0 +1,36 @@
+# Output 報告品質規則
+
+當你在 `cases/{目標}/` 目錄下寫入或編輯報告時，必須遵守以下規則：
+
+## 檔名格式
+
+`{YYYY-MM-DD}_{名稱}_{report-type}.md`
+
+report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief` / `supplement`
+
+## 必要元素
+
+1. **來源追蹤**：每個關鍵論點標註資料來源（URL 或報告名稱 + 年份）
+   - **Drop zone 來源引用格式**：`[來源: cases/{target}/input/{filename}]`，PDF 請標註頁碼，截圖請標註截圖日期。Drop zone 不豁免交叉驗證，完整規則見 `references/methodology/drop-zone.md`
+2. **證據等級標記**：
+   - 充分證據（多來源交叉驗證）→ 正常陳述
+   - 部分證據（單一來源或間接推論）→ 標註 `[部分證據]`
+   - 證據不足（搜尋未果但有合理推測）→ 標註 `[推測，待驗證]`
+   - 無資料（完全搜尋不到）→ 標註 `[資料缺失]` 並說明已嘗試的搜尋策略
+   - **僅 drop zone 來源、無 web 佐證**：證據等級降一級（充分→部分、部分→推測），標註「僅見於使用者提供文件，公開網路無獨立佐證」
+3. **分析日期**：報告 metadata 中標註撰寫日期
+4. **搜尋紀錄摘要**：主要搜尋關鍵詞和來源數量
+5. **Drop zone 使用紀錄**：報告 metadata 中列出本次分析使用的 drop zone 檔案清單
+
+## 語言
+
+繁中；專有名詞首次附英文；財務數據標年份+幣別；區分事實與觀點。
+
+## Decision Brief 特殊規則
+
+Decision Brief（決策簡報）除了上述通用規則外，還需遵守：
+
+1. **引用完整性**：每個觀點必須引用主報告中的具體章節或數據，不得引入報告外資訊
+2. **角色一致性**：分析鏡頭必須與 User Profile 的角色設定一致
+3. **證據等級繼承**：主報告的證據標記必須原封不動繼承，不得升級或降級
+4. **零搜尋預算**：Decision Brief 階段不得執行任何 web_search 或 web_fetch

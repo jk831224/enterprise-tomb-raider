@@ -11,7 +11,7 @@
 
 | 項目 | 內容 |
 |------|------|
-| **對應主報告** | `cases/{target}/company-report.md` v{X.Y} |
+| **對應主報告** | `cases/{target}/{YYYY-MM-DD}_{target}_company-report.md` v{X.Y} |
 | **觸發資料** | [新增的 drop zone 檔案清單] |
 | **分析日期** | YYYY-MM-DD |
 | **搜尋預算使用** | search X / fetch Y（上限 5/2） |
@@ -40,9 +40,9 @@
 
 ## 對 Decision Brief 的影響
 
-> 哪些四重鏡頭判斷需要修正。
+> User Profile 角色鏡頭下，哪些判斷需要修正。
 
-[逐鏡頭列出受影響的判斷]
+[列出受影響的判斷：一句話判斷 / 三件事 / 紅旗 / 該問的問題]
 
 ## 仍待驗證
 

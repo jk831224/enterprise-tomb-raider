@@ -37,7 +37,7 @@ case "$basename" in
   *_industry-report.md)           required_prompt="agent/prompts/industry-analysis.md" ;;
   *_company-report.md)            required_prompt="agent/prompts/company-deep-dive.md" ;;
   *_decision-brief.md)            required_prompt="agent/prompts/decision-brief.md" ;;
-  *_supplement.md)                required_prompt="agent/prompts/supplement-analysis.md" ;;
+  *_supplement.md|*_supplement-*.md) required_prompt="agent/prompts/supplement-analysis.md" ;;
   *) exit 0 ;;
 esac
 
@@ -90,7 +90,7 @@ cat >&2 <<EOF
 without first loading the stage prompt.
 
 Required: Read $required_prompt
-Reason:   recon SKILL Step 4 mandates loading each stage prompt before
+Reason:   company SKILL Step 4 mandates loading each stage prompt before
           producing its artifact. "I remember the structure" is not a
           substitute — the prompt file contains the checklist, required
           tables, and evidence-grade rules that make the report conform

@@ -6,7 +6,9 @@
 
 `{YYYY-MM-DD}_{名稱}_{report-type}.md`
 
-report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief` / `supplement`
+report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief` / `supplement-{nn}`（增量更新帶序號，存於 `cases/{名稱}/supplements/`）
+
+此格式為唯一檔名規格——不產出裸名（無日期前綴）的報告檔。
 
 ## 必要元素
 

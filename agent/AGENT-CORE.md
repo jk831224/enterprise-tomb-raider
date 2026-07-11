@@ -40,6 +40,8 @@ WHILE 產出未達完成標準:
 
 每階段硬上限：20 search + 10 fetch。利害關係人每人 ≤5 次。關聯實體最多展開 2 層。餘額可跨階段挪用。MCP tool call 計入 fetch 預算。
 
+**對抗式深挖輪（v2.0）**：上表為輪 0 線性階段預算。深挖輪的 explorer/critic subagent 預算由**總上限**控管（微型 40 / 中型 60 / 大型 90 total search），分配演算法與終止條件見 `agent/AGENT-LOOP.md`。
+
 ## 降級策略
 
 1. **標註證據等級**：依 `.claude/rules/output-quality.md` 四級標準

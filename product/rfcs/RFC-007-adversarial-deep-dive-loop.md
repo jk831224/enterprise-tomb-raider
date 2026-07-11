@@ -2,9 +2,9 @@
 
 | 欄位 | 內容 |
 |------|------|
-| **狀態** | Draft（草稿由 Claude 協助起草，待 Andrew 審定後轉 Accepted） |
+| **狀態** | Accepted（2026-06-11 Andrew 於 /company 技能升級審批中核准 Scope B＝Phase 1 落地；Phase 2 待首案驗收後另啟） |
 | **建立日期** | 2026-06-08 |
-| **最後更新** | 2026-06-08 |
+| **最後更新** | 2026-06-11 |
 | **作者** | Andrew Yen |
 | **對應版本** | v2.0 |
 | **CHANGELOG entry** | [v2.0](../../CHANGELOG.md#v20)（待 release 回填） |

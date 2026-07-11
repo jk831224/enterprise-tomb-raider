@@ -1,7 +1,7 @@
 # Drop Zone 方法論
 
 > Agent 處理 `cases/{target}/input/` 目錄下使用者提供檔案的規範。
-> 使用者面向的說明見 `input/README.md`，本文件是 agent 的執行規範。
+> 使用者面向的說明見 `cases/README.md`，本文件是 agent 的執行規範。
 
 ## 設計目的
 
@@ -24,11 +24,11 @@ drop zone 檔案進入 AGENT-CORE.md 的數據源優先序時，**位於最頂�
 
 ## 掃描時機
 
-由 `.claude/skills/recon/SKILL.md` 的 **Step 3.5: Drop Zone Scan** 觸發。在 Scoping 完成、進入研究執行（Step 4）之前掃描一次，掃描結果作為 context 傳給後續所有階段。
+由 `.claude/skills/company/SKILL.md` 的 **Step 3.5: Drop Zone Scan** 觸發。在 Scoping 完成、進入研究執行（Step 4）之前掃描一次，掃描結果作為 context 傳給後續所有階段。
 
 掃描動作：
 
-1. 用 Glob 列出 `input/{target-slug}/**/*` 所有檔案
+1. 用 Glob 列出 `cases/{target}/input/**/*` 所有檔案（target 用中文原樣，不羅馬化）
 2. 如果存在 `MANIFEST.md`，立即 Read 並記錄每份檔案的標註
 3. 如果存在 `.md` / `.txt` 筆記類檔案（小於 50KB），立即 Read
 4. PDF / 圖片 / HTML **不在 Step 3.5 預讀**，由後續對應階段需要時才讀取（避免一次塞爆 context）
@@ -101,7 +101,7 @@ drop zone 檔案 + 1 個 web 來源 = 滿足「兩個獨立來源」要求。
 範例：
 
 ```markdown
-2024 年營收為 8.5 億新台幣 [來源: input/個人理財 SaaS A/2024-annual-report.pdf, p.42]，
+2024 年營收為 8.5 億新台幣 [來源: cases/個人理財 SaaS A/input/2024-annual-report.pdf, p.42]，
 與公司官網 IR 頁面數字一致 [來源: https://...]。
 ```
 
@@ -109,7 +109,7 @@ PDF 請標註頁碼，截圖請標註截圖日期（從 MANIFEST 取得）。
 
 ## 與年報解析階段的整合
 
-`.claude/skills/recon/SKILL.md` Step 4.0.5（預分析評估）原本會問使用者「如果你已下載年報 PDF，請提供檔案路徑」。
+`.claude/skills/company/SKILL.md` Step 4.0.5（預分析評估）原本會問使用者「如果你已下載年報 PDF，請提供檔案路徑」。
 
 **新流程**：
 1. Step 3.5 已掃描過 drop zone，記錄是否找到年報 PDF

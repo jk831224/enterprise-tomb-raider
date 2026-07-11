@@ -27,11 +27,12 @@
 
 按以下優先序嘗試，成功即停止：
 
-1. **使用者已提供本地 PDF 路徑** → 直接 Read（最快、最可靠）
+1. **使用者已提供本地 PDF 路徑（drop zone 或絕對路徑）** → 直接 Read（最快、最可靠——實戰證明 web 取得 PDF 常失敗，這是一級路徑而非備援）
 2. **公司 IR 網站 fetch** → `web_search "[公司名] investor relations annual report"` 或 `"[公司名] 投資人關係 年報"`，找到 PDF URL 後 `web_fetch`
 3. **監管機構平台** → 依市場不同（台灣 MOPS、美國 EDGAR 等），`web_search` + `web_fetch`
-4. **HTML 版年報** → 部分公司提供線上版年報，`web_fetch` HTML 頁面
-5. **全部失敗** → 標註 `[年報未取得]`，列出已嘗試的來源和失敗原因，進入降級模式
+4. **JS 渲染頁面 → MCP `headless_fetch`**（如可用）：MOPS 等需 JS 的頁面用 headless_fetch 取代 web_fetch；MCP call 計入 fetch 預算
+5. **HTML 版年報** → 部分公司提供線上版年報，`web_fetch` HTML 頁面
+6. **全部失敗** → 標註 `[年報未取得]`，進入降級模式；**降級前先向使用者提出**：「請至 MOPS／公司 IR 下載年報 PDF 放入 `cases/{target}/input/`，我直接解析——比繼續嘗試線上取得更可靠。」
 
 ### Step 3：解析
 

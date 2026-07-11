@@ -48,14 +48,14 @@
 
 ### Step 3: Decision Brief 影響評估
 
-如果既有 Decision Brief 存在，評估 Step 2 的結果對四重鏡頭判斷的影響：
-- 哪些鏡頭的核心判斷需要修正？
+如果既有 Decision Brief 存在，評估 Step 2 的結果對 **User Profile 角色鏡頭**判斷的影響（角色鏡頭定義見 `agent/prompts/decision-brief.md`）：
+- 該角色的核心判斷（一句話判斷、三件最重要的事）是否需要修正？
 - 紅旗警示是否有新增或降級？
 - 「你該問的問題」是否有被回答或需新增？
 
 ### Step 4: 產出
 
-1. **Supplement Memo** → `cases/{target}/supplements/{date}_supplement-{nn}.md`（使用 `references/templates/supplement-memo.md` 格式）
+1. **Supplement Memo** → `cases/{target}/supplements/{YYYY-MM-DD}_{target}_supplement-{nn}.md`（使用 `references/templates/supplement-memo.md` 格式）
 2. **更新主報告 Version History**：Edit 主報告，在 Version History 表格末尾追加新行
 3. **可選：重新產出 Decision Brief**（零搜尋預算，完全基於主報告 + supplement memo）
 

@@ -11,21 +11,23 @@ cases/
 │   │   ├── MANIFEST.md         # （選用）檔案標註
 │   │   ├── xxx-annual-report.pdf
 │   │   └── headhunter-notes.md
-│   ├── company-report.md       # 主報告（含 Version History）
-│   ├── decision-brief.md       # 決策簡報
+│   ├── 2026-04-10_XX公司_company-report.md   # 主報告（含 Version History）
+│   ├── 2026-04-10_XX公司_decision-brief.md   # 決策簡報
 │   ├── supplements/            # 增量更新 memos
-│   │   └── 2026-04-10_supplement-01.md
+│   │   └── 2026-04-15_XX公司_supplement-01.md
 │   └── case-log.md             # 陷阱紀錄 + 案例沉澱
 ```
+
+報告檔名一律為日期制 `{YYYY-MM-DD}_{名稱}_{report-type}.md`（規格見 `.claude/rules/output-quality.md`）。
 
 ## 怎麼用
 
 ### 首次分析
 
-執行 `/company XX公司` 或 `/recon XX公司`，系統會自動：
+執行 `/company XX公司`，系統會自動：
 1. 建立 `cases/XX公司/` 資料夾
 2. 掃描 `cases/XX公司/input/`（如有預先放入的檔案）
-3. 產出報告到 `cases/XX公司/company-report.md`
+3. 產出報告到 `cases/XX公司/{日期}_XX公司_company-report.md`
 
 ### 追加資料 + 增量更新
 
@@ -38,7 +40,7 @@ cases/
 
 推薦使用結構化格式。詳見 `references/methodology/interview-notes-schema.md`。
 
-也可以用 `/meeting` 先結構化逐字稿，再把產出丟進 `input/`。
+逐字稿可先用任何會議筆記結構化工具整理成該格式，再把產出丟進 `input/`。
 
 ## Drop Zone 規則
 

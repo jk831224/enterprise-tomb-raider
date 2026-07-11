@@ -49,46 +49,36 @@ cd enterprise-tomb-raider
 claude
 ```
 
-Claude Code 啟動後，四個指令之間的路徑選擇是自動的，你不用記：
+兩個指令就是全部（v2.1 起單一入口）：
 
 | 指令 | 用途 | 範例 |
 | --- | --- | --- |
-| `/recon` | 統一入口，自動判斷路徑 | `/recon 台積電`、`/recon AI Agent 產業` |
-| `/industry` | 直接進入產業分析（路徑 A） | `/industry 東南亞跨境電商物流` |
-| `/company` | 直接進入公司分析（路徑 B） | `/company 鴻海` |
+| `/company` | 公司深度研究的唯一入口 | `/company 鴻海` |
 | `/supplement` | 對既有報告做增量更新 | `/supplement 鴻海` |
 
-也可以直接用自然語言：「幫我研究台積電」，系統會自動觸發 `/recon`。
+也可以直接用自然語言：「幫我研究台積電」「幫我盡調這家公司」，系統會自動觸發 `/company`。
+
+> v1.x 曾有 `/recon`（路徑判斷）與 `/industry`（產業分析）入口。15 個實戰案例全部是公司研究、路徑判斷從未發揮價值之後，v2.1 把它們整併移除了（[RFC-008](./product/rfcs/RFC-008-single-entry-consolidation.md)）——這本身就是一課 Context Engineering：**入口的數量是給使用者的 context，用數據修剪它**。產業脈絡仍會以錨點章節涵蓋在公司報告內。
 
 > 首次使用會觸發一次 **User Profile 設定**（可跳過）。設定之後，每次分析完成會額外產出**決策簡報（Decision Brief）**，根據你的角色（投資人／求職者／合作方／競品分析師／盡職調查方）重新解讀報告重點。
 
-## 兩條分析路徑
-
-### 路徑 A：產業 → 公司
-
-適合你想了解一個產業的全貌，還沒有特定目標公司。
+## 研究流程
 
 ```
-觸發：「幫我研究 XX 產業」「XX 行業分析」「供應鏈分析」
-
-流程：Scoping → 產業分析（歷史趨勢 + 結構定位 + 頂級玩家）
-      → 可選：深入特定公司（進入路徑 B）
-      → 可選：Decision Brief（若已設定 User Profile）
-```
-
-### 路徑 B：公司 → 產業
-
-適合你已經有一家想了解的公司。
-
-```
-觸發：「幫我研究 XX 公司」「公司盡職調查」
+觸發：「幫我研究 XX 公司」「公司盡職調查」「/company XX」
 
 流程：Scoping → 實體驗證 → 利害關係人調查
       → 產業分析（以該公司為錨點）
       → 年報解析（大型/上市強制、中型建議、微型跳過）
-      → 公司深度分析 → 品質 Review
+      → 公司深度分析（輪 0 baseline）
+      → 對抗式深挖輪（v2.0）：4 類來源 explorer 平行探勘
+        （政府紀錄／公開言論／匿名風評／關聯網絡）
+        + critic 對抗證偽 → 證據等級升降
+      → 品質 Review
       → 可選：Decision Brief（若已設定 User Profile）
 ```
+
+深挖輪是 v2.0 的核心增量（[RFC-007](./product/rfcs/RFC-007-adversarial-deep-dive-loop.md)）：subagent 一律回傳 typed structured output（含來源 URL 與原文截句），隔離執行但證據鏈不斷；預算規模自適應（微型公司自然收斂，不空轉）。
 
 ## 產出
 
@@ -114,9 +104,7 @@ enterprise-tomb-raider/
 ├── .claude/                 # Claude Code 專案配置
 │   ├── settings.json        # 權限 + hooks 註冊
 │   ├── skills/              # 自定義指令
-│   │   ├── recon/           # /recon — 統一入口
-│   │   ├── industry/        # /industry — 產業分析快捷
-│   │   ├── company/         # /company — 公司分析快捷
+│   │   ├── company/         # /company — 公司深度研究（唯一入口）
 │   │   └── supplement/      # /supplement — 增量更新
 │   ├── rules/               # 品質規則（自動載入）
 │   │   └── output-quality.md
@@ -124,7 +112,10 @@ enterprise-tomb-raider/
 │       └── enforce-stage-prompt-load.sh   # 沒載入階段 prompt 就不許寫報告（RFC-006）
 ├── agent/
 │   ├── AGENT-CORE.md        # 執行核心（角色、迴圈、預算、降級、錯誤處理）
-│   ├── AGENT-ROUTES.md      # 路徑與階段清單
+│   ├── AGENT-ROUTES.md      # 階段順序摘要
+│   ├── AGENT-LOOP.md        # 對抗式深挖輪編排（v2.0，RFC-007）
+│   ├── subagents/           # explorer ×4 + critic 的 playbook
+│   ├── schemas/             # typed output 格式（Finding / CriticVerdict）
 │   └── prompts/             # 各階段執行 prompt（按階段動態載入）
 │       ├── entity-verification.md
 │       ├── stakeholder-investigation.md
@@ -134,7 +125,7 @@ enterprise-tomb-raider/
 │       ├── decision-brief.md
 │       └── supplement-analysis.md
 ├── references/              # 共用知識層（Skill 和 Agent 都引用）
-│   ├── methodology/         # 路徑選擇、規模分類、年報來源、drop zone 規範、品質檢查
+│   ├── methodology/         # 規模分類、年報來源、深挖來源矩陣、drop zone 規範、品質檢查
 │   ├── templates/           # 報告結構模板
 │   └── cases/               # 已去識別化的案例知識庫（Agent 執行前讀取）
 ├── cases/                   # 你自己在本機跑出來的真實研究案例（gitignored）
@@ -222,6 +213,8 @@ v1.9（RFC-006）的解法是把規範升級為 harness 層的物理約束。`.c
 | References 獨立 | 放在 Skill 和 Agent 之外 | 兩層都要用，放共用層避免雙寫 |
 | Cases 雙目錄 | 本機真實案例與公開知識庫分離 | 讓 fork 使用者在不洩漏敏感資訊的前提下也能貢獻 |
 | 規範升級為約束 | 關鍵 SOP 用 PreToolUse hook 強制 | 自然語言規範會在壓力下被模型自主重新詮釋 |
+| 單一入口（v2.1） | 移除 /recon、/industry，只留 /company | 15 案實戰數據顯示路徑判斷零使用；入口數也是 context，用數據修剪 |
+| 驗證外掛化（v2.0） | 證偽交給獨立 critic subagent | 證據等級自評＝自己改自己的考卷；對抗驗證是 2026 可靠性標配 |
 
 ---
 

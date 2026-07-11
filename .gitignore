@@ -17,3 +17,7 @@ output/*.md
 input/*/
 
 __pycache__/
+
+# 打包產物（.skill 由 CI/手動重產，不入庫）
+dist/
+.serena/
