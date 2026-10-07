@@ -193,6 +193,27 @@ Scoping 完成 = 能填完以下參數包：
 
 **hook 保護**：`.claude/hooks/enforce-stage-prompt-load.sh` 會在 Write/Edit `cases/**/*_{stage}.md` 前檢查 transcript 是否有 Read 對應 prompt。沒 Read = Write 被擋。這是物理防線，別試圖繞過。
 
+### 調查日誌（replay-log，邊查邊寫）
+
+從 Step 3.5 起，每完成一批工具呼叫或做出一個關鍵判斷，就 append 一行到 `cases/{目標名稱}/replay-log.jsonl`。**當下寫，不可事後憑記憶重建**——Step 6 的調查重播動畫完全由這份日誌產生。
+
+- 第 1 行是 meta：`{"meta": {"title": "我怎麼調查{公司簡稱}", "subtitle": "...", "date": "YYYY-MM-DD", "phases": [["A","階段名"], ...]}}`（phases 依本次實際階段命名，可在收尾前補齊）
+- 之後每行一個步驟：
+
+| 欄位 | 內容 |
+|------|------|
+| `ph` | 所屬階段代號（對應 meta.phases） |
+| `k` | `act` 行動／`judge` 判斷／`infer` 推論／`persist` 堅持（失敗後換法再試）／`quit` 放棄 |
+| `tools` | 用到的工具，如 `["WebSearch ×3"]`；純判斷填 `[]` |
+| `t` | 一句話標題 |
+| `did` / `got` / `why` | 做了什麼／得到什麼／為什麼這樣做（放棄要寫停的理由，堅持要寫為什麼值得再試） |
+| `d` | 本步的呼叫計數：`ws` 搜尋、`web` 網頁抓取、`pdf` PDF 下載、`mcp` MCP 呼叫、`agent` subagent。**必須等於實際呼叫次數** |
+| `add` | 新線索 `[[id, 欄, 標記, 文字]]`；欄為 `id` 身分與經營者／`story` 故事客戶產業／`money` 錢／`rep` 員工評價／`risk` 風險與訴訟／`gap` 查不到・被攔下；標記用 ✅ ◐ 📣 ？ ✕ 🛑 |
+| `upd` | 更新既有線索 `[[id, 新標記, 新文字]]`（例如第二來源確認後升級） |
+| `hl` | 本步推論引用的既有線索 id |
+
+- 對抗式深挖輪：一批 subagent 記成一步（`tools: ["Agent ×4"]`，`d.agent` 記 spawn 數，搜尋數依 subagent 回報加總）
+
 ### Step 4.0.5: 預分析評估（Pre-Analysis Assessment）
 
 **觸發時機**：entity-verification 完成、使用者確認基本輪廓之後、stakeholder-investigation 之前。
@@ -304,8 +325,9 @@ Scoping 完成 = 能填完以下參數包：
 1. 確認 `cases/{目標名稱}/` 下各階段產物齊全（entity / stakeholder / industry / company-report / decision-brief，依規模而定），主報告含 Version History v1.0
 2. 載入 `cases/_case-template.md`，沉澱本次分析的案例到 `cases/{目標名稱}/case-log.md`
 3. **教訓回寫檢查**：逐條檢視 case-log 的「遇到的陷阱」——教訓若可複用（新的 fetch 失敗站點、新的有效搜尋樣式、降級規則），直接更新對應檔（`fetch-policy.md` / `deep-dive-sources.md` / 對應階段 prompt）；不確定是否該回寫的，列入 case-log「待回寫」清單。案例只沉澱不回寫＝系統不會變聰明
-4. 向 Mission Control 回報完成（`kanban move` + `research-complete` event，指令見專案 CLAUDE.md）
-5. 提示使用者：「後續有新資料（訪談筆記、PDF、新聞稿），可放入 `cases/{目標名稱}/input/` 後執行 `/supplement {目標名稱}` 增量更新。」
+4. **產生調查重播動畫**：補齊 `replay-log.jsonl` 的 meta.phases 後執行 `python3 scripts/build-replay.py "cases/{目標名稱}"`，產出 `{YYYY-MM-DD}_{目標名稱}_replay.html`（腳本會驗證欄位與線索引用，失敗就修日誌再跑）。用 Artifact 工具發布這個檔案，把連結給使用者。範本在 `references/templates/investigation-replay.html`，不要手改
+5. 向 Mission Control 回報完成（`kanban move` + `research-complete` event，指令見專案 CLAUDE.md）
+6. 提示使用者：「後續有新資料（訪談筆記、PDF、新聞稿），可放入 `cases/{目標名稱}/input/` 後執行 `/supplement {目標名稱}` 增量更新。」
 
 ## 如果使用者給了 $ARGUMENTS
 
@@ -313,4 +335,4 @@ Scoping 完成 = 能填完以下參數包：
 
 ## 依賴清單（本 skill 不可獨立安裝）
 
-本 skill 依賴同 repo 內的：`agent/`（CORE / ROUTES / LOOP / prompts / subagents / schemas）、`references/methodology/`、`references/templates/`、`.claude/rules/output-quality.md`、`.claude/hooks/enforce-stage-prompt-load.sh`。打包安裝到其他環境不會運作。
+本 skill 依賴同 repo 內的：`agent/`（CORE / ROUTES / LOOP / prompts / subagents / schemas）、`references/methodology/`、`references/templates/`、`.claude/rules/output-quality.md`、`.claude/hooks/enforce-stage-prompt-load.sh`、`scripts/build-replay.py`。打包安裝到其他環境不會運作。

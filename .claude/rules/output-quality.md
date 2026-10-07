@@ -6,7 +6,7 @@
 
 `{YYYY-MM-DD}_{名稱}_{report-type}.md`
 
-report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief` / `supplement-{nn}`（增量更新帶序號，存於 `cases/{名稱}/supplements/`）
+report-type 只能是：`industry-report` / `company-report` / `entity-verification` / `stakeholder-investigation` / `decision-brief` / `supplement-{nn}`（增量更新帶序號，存於 `cases/{名稱}/supplements/`）/ `overview`（公司脈絡讀本，試行中；可用符號標示證據等級，但須在 metadata 列出符號與四級標記的對照）/ `replay`（調查重播動畫，副檔名 `.html`，由 `scripts/build-replay.py` 從 `replay-log.jsonl` 產生，不手寫）
 
 此格式為唯一檔名規格——不產出裸名（無日期前綴）的報告檔。
 

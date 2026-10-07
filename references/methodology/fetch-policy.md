@@ -36,6 +36,7 @@
 - **規則**：登記資料（董監事、資本額、地址）至少兩個獨立來源比對一致才可寫入報告；若來源間有衝突，以「最後核准變更日期」最新者為準
 - **資安廠商自家官網通常 fetch 失敗**（雲端資安代理商 B 案：自家 WAF 對自動化請求一律擋）。遇到資安/CDN 代理商，**預期**官網 403，直接走媒體報導 + snippet，不浪費 fetch 預算
 - **MCP `tw-data`（tw_company_lookup / tw_person_network）可能整 session 逾時不可用**（微型廣告代理 D 案：4 次呼叫全部 30s timeout）。**不要連試超過 2 次**，立即改走 web 回退鏈：登記資料→`costring.com/business/[統編]/` + `companys.com.tw/[統編]`（兩源交叉）；人物關聯法人→`data.zhupiter.com/oddt/[id]/[人名]/`（見 deep-dive-sources.md）
+- **司法院裁判書 PDF**：搜尋結果給的 `judgment.judicial.gov.tw/FILES/{法院代碼}/{年度,字別,號,日期,序}.pdf` 對程式抓取回傳 HTML 而非 PDF。改用 `data.judicial.gov.tw/opendl/JDocFile/{同一段路徑}.pdf` 可直接取得 PDF 並抽出全文（企業 XR 軟體 F 案實測）。搜尋結果常混入同字別、不相關當事人的裁判書，抽出全文後須先核對當事人欄位再採用
 - **twfile.com 的人物查詢頁 `Lp.aspx?q=[人名]` 與公司情報頁同為 JS 渲染，fetch 回傳空白**（已在黑名單，此處補記人物頁 URL 形式）
 
 **維護規則**：每次分析中遇到新的 fetch 失敗網站，在案例沉澱（`cases/{target}/case-log.md`）中記錄，定期更新此黑名單。
